@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fonts-paper",
+  "title": "Gamestage fonts, paper",
+  "description": "IBM Plex Sans for interface text and Instrument Serif for the numbers a player tracks, linked from Google Fonts. Neither is in the base pairing, so a paper install without this item renders in system-ui and Georgia. Installed for you by @gamestage/theme-paper.",
+  "files": [
+    {
+      "path": "packages/tokens/fonts-paper.css",
+      "content": "/* Gamestage fonts, paper theme (GSUI-60).\n\n   The paper theme names IBM Plex Sans for interface text and Instrument Serif\n   for the numbers a player tracks. Neither is in the base pairing, so neither\n   is on the page unless this stylesheet is, and a paper install without it\n   falls through to system-ui and Georgia and reads as a recolour.\n\n   Import once at the root, before gamestage-tokens.css. Hosts that control\n   their own <head> should also add\n     <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n   which a stylesheet cannot express. */\n@import url(\"https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap\");\n",
+      "type": "registry:style",
+      "target": "app/gamestage-fonts-paper.css"
+    }
+  ],
+  "docs": "Import gamestage-fonts-paper.css once at the root, before gamestage-tokens.css, in place of gamestage-fonts.css. `font.import` is blank for the reason given on @gamestage/fonts.",
+  "categories": [
+    "Foundations"
+  ],
+  "type": "registry:font",
+  "font": {
+    "family": "IBM Plex Sans",
+    "provider": "google",
+    "import": "",
+    "variable": "--gs-type-font-family-interface",
+    "weight": [
+      "400",
+      "500",
+      "600",
+      "700"
+    ],
+    "subsets": [
+      "latin"
+    ]
+  }
+}

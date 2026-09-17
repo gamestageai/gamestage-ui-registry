@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "round",
+  "title": "Round",
+  "description": "\"Round 2 of 5\": a number and a ceiling, and almost nothing else. A thin wrapper over stat, which already knows that a value with a max reads as a fraction on screen and as \"2 of 5\" to a screen reader. It performs nothing and decides nothing; it exists so a host writes the round rather than remembering which stat kind a round is, and so a test can find the round on a surface that also carries a score and a timer. Draws as a row of segment pips — done, the one the player is on, and coming — beside the words, which is what the design draws. Without a max there is no sequence to draw and the pips give way to the bare number, because an endless mode is a real case.",
+  "dependencies": [
+    "react"
+  ],
+  "registryDependencies": [
+    "@gamestage/stat"
+  ],
+  "files": [
+    {
+      "path": "packages/ui/src/round/round.tsx",
+      "content": "'use client'\n\nimport * as React from 'react'\n\nimport { Stat, type StatPresentation } from './stat'\n\n\n/**\n * Round: \"round 2 of 5\", drawn as a row of pips.\n *\n * A number and a ceiling. It performs nothing, it decides nothing, and it adds\n * no rendering of its own: `stat` already knows that a value with a max reads\n * as \"2 of 5\" to a screen reader, and since GSUI-100 it knows how to draw that\n * as a row of segment pills — done, current, coming. This exists so that a host\n * writes `<Round value={2} max={5} />` instead of remembering which `kind` a\n * round is, and so that a test can find the round on a surface that also\n * carries a score and a timer.\n *\n * Without a `max` there is no sequence to draw, so the pips degrade to the bare\n * number. A round with no known total is a real case — an endless mode — and it\n * should render rather than throw.\n */\n\nexport interface RoundProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {\n  /** Which round this is. 1-based, like every other position in the contract. */\n  value: number\n  /** How many rounds there are, when that is known in advance. */\n  max?: number\n  /** The word beside the number. Defaults to `round`. */\n  label?: string\n  /** The silhouette. A row of pips is what the design draws. */\n  presentation?: StatPresentation\n}\n\nexport function Round({\n  value,\n  max,\n  label,\n  presentation = 'pips',\n  className,\n  ...rest\n}: RoundProps) {\n  return (\n    // No wrapper: `stat` takes `component` as a prop now, so round names its\n    // own root without a second element.\n    <Stat\n      {...rest}\n      className={className}\n      component=\"round\"\n      kind=\"round\"\n      value={value}\n      max={max}\n      label={label}\n      presentation={presentation}\n    />\n  )\n}\n",
+      "type": "registry:ui",
+      "target": "components/gamestage/round.tsx"
+    }
+  ],
+  "docs": "Pass `value` for the round the player is on, 1-based like every other position in the contract, and `max` for how many there are when that is known in advance. Leave `max` off for an endless ladder; the round is still a number. Pass `label` to call it something else, a question or a leg or a heat, and the accessible name follows. `data-gs-value` and `data-gs-max` carry the two numbers separately, so nothing has to parse \"2/5\".",
+  "categories": [
+    "Game state"
+  ],
+  "type": "registry:ui"
+}

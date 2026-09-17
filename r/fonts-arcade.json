@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fonts-arcade",
+  "title": "Gamestage fonts, arcade",
+  "description": "Bungee for the numbers and actions a player tracks, DM Sans for interface text, linked from Google Fonts. The arcade theme names Bungee as its display family; this item is what puts it on the page. Installed for you by @gamestage/theme-arcade.",
+  "files": [
+    {
+      "path": "packages/tokens/fonts-arcade.css",
+      "content": "/* Gamestage fonts, arcade theme (GSUI-60).\n\n   The arcade theme names Bungee as its display face in\n   packages/tokens/themes/arcade.json. A theme may name any family it likes,\n   because type.fontFamily.interface and .display are tokens; what it cannot do\n   is load one. Without this stylesheet on the page the family is simply absent,\n   the stack falls through to the next entry, and the theme looks as though it\n   changed nothing. That silence is the whole reason this file exists.\n\n   Interface text stays on DM Sans, the base pairing, so this imports both.\n   Import once at the root, before gamestage-tokens.css. Hosts that control\n   their own <head> should also add\n     <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n   which a stylesheet cannot express. */\n@import url(\"https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..900&family=Bungee&family=Unbounded:wght@500..900&display=swap\");\n",
+      "type": "registry:style",
+      "target": "app/gamestage-fonts-arcade.css"
+    }
+  ],
+  "docs": "Import gamestage-fonts-arcade.css once at the root, before gamestage-tokens.css, in place of gamestage-fonts.css. The `font` block is metadata the installer reads for nothing; the Google Fonts `@import` in the stylesheet loads the family, and `font.import` is blank because BDS-005 chose to link Google Fonts rather than self-host. A theme can name any family it likes, because the families are tokens; what it cannot do is load one, and a theme whose family is not loaded falls through its stack in silence and looks like a theme that changed nothing.",
+  "categories": [
+    "Foundations"
+  ],
+  "type": "registry:font",
+  "font": {
+    "family": "Bungee",
+    "provider": "google",
+    "import": "",
+    "variable": "--gs-type-font-family-display",
+    "weight": [
+      "400"
+    ],
+    "subsets": [
+      "latin"
+    ]
+  }
+}

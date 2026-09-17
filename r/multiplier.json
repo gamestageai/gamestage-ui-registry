@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "multiplier",
+  "title": "Multiplier",
+  "description": "The score multiplier, as a thin wrapper over `stat`: it renders `x3` where stat renders `3`. `data-gs-value` still carries `3`, so a host and a test read the number without parsing the x. The typeface, the tabular numerals, the label, the change beside the number and every settlement state are stat's and unchanged. It fixes `kind=\"multiplier\"` so the host does not have to remember the kind, and a test can find it among other numbers through `data-gs-stat=\"multiplier\"`; its root defaults to `data-gs-component=\"stat\"`. Performs nothing: it does not earn a multiplier, multiply a score or settle the value. Use plain `stat` when the host chooses the kind at runtime or needs its own multiplier format rather than the fixed x prefix.",
+  "dependencies": [
+    "react"
+  ],
+  "registryDependencies": [
+    "@gamestage/stat"
+  ],
+  "files": [
+    {
+      "path": "packages/ui/src/multiplier/multiplier.tsx",
+      "content": "'use client'\n\nimport { Stat, type StatProps } from './stat'\n\n/**\n * Multiplier: `stat` with `kind=\"multiplier\"`, rendered as `x3` rather than `3`.\n *\n * That is the whole of it. The typeface, the tabular numerals, the label, the\n * change beside the number and `data-gs-value` are all stat's and all\n * unchanged, so a host reads `3` while a player reads `x3`.\n *\n * No stylesheet: it adds no styling, and stat already sizes a multiplier.\n */\n\nexport type MultiplierProps = Omit<StatProps, 'kind' | 'format'>\n\nexport function Multiplier(props: MultiplierProps) {\n  return <Stat {...props} component=\"multiplier\" kind=\"multiplier\" format={(value) => `x${value}`} />\n}\n",
+      "type": "registry:ui",
+      "target": "components/gamestage/multiplier.tsx"
+    }
+  ],
+  "docs": "Pass `value` as the number, not as `x3`. Everything else is stat's: `delta` for a change beside it, `settlement` for a multiplier the host has yet to confirm, `label` for the word in front of it.",
+  "categories": [
+    "Game state"
+  ],
+  "type": "registry:ui"
+}

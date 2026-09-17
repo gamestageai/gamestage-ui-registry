@@ -1,0 +1,36 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fonts",
+  "title": "Gamestage fonts",
+  "description": "DM Sans for interface text and Unbounded for numbers a player tracks (score, timer, rank, multiplier, level), linked from Google Fonts. Kept in a separate stylesheet so a customer with their own typeface can replace the font loading without forking the components. Renders nothing, creates no DOM and sets no root attribute: it loads font faces and does not apply the token styles. `tokens` lists this item as a registry dependency, so installing tokens installs it too, and the fonts stylesheet is imported before the tokens stylesheet. For a customer typeface, supply that font stylesheet and override the font tokens rather than importing this one.",
+  "files": [
+    {
+      "path": "packages/tokens/fonts.css",
+      "content": "/* Gamestage fonts: DM Sans (interface text) and Unbounded (numbers a player\n   tracks: score, timer, rank, multiplier, level), linked from Google Fonts\n   rather than self-hosted (BDS-005). Weights mirror examples/lab/index.html.\n   Import this once at the root, before gamestage-tokens.css, so the family\n   names tokens.css declares are already loaded.\n\n   A stylesheet cannot express a preconnect hint: hosts that control their own\n   <head> should also add\n     <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n   themselves. */\n@import url(\"https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..900&family=Unbounded:wght@500..900&display=swap\");\n",
+      "type": "registry:style",
+      "target": "app/gamestage-fonts.css"
+    }
+  ],
+  "docs": "Imports DM Sans (interface text, weights 400-900) and Unbounded (numbers a player tracks, weights 500-900) from Google Fonts, mirroring examples/lab/index.html. Import gamestage-fonts.css once at the root, before gamestage-tokens.css. The `font` block is metadata: the installer reads it for nothing, and the Google Fonts `@import` in gamestage-fonts.css is the only loading mechanism this item ships. `font.import` is blank because BDS-005 decided to link Google Fonts rather than self-host the family. Self-hosting was considered and deferred: linking is one line and a third-party request on every page load, self-hosting is a licence question and roughly 300KB; revisit at the stage 11 cold-load budget work.",
+  "categories": [
+    "Foundations"
+  ],
+  "type": "registry:font",
+  "font": {
+    "family": "DM Sans",
+    "provider": "google",
+    "import": "",
+    "variable": "--gs-type-font-family-interface",
+    "weight": [
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "subsets": [
+      "latin"
+    ]
+  }
+}

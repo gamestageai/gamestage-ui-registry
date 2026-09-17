@@ -1,0 +1,1572 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "gamestage-ui",
+  "homepage": "https://github.com/gamestageai/gamestage-ui",
+  "items": [
+    {
+      "name": "adapter",
+      "type": "registry:ui",
+      "title": "Host adapter",
+      "description": "The seam between what Gamestage UI renders and what a host performs. It is a TypeScript interface, a React provider and a `useGamestageElement` hook, and it is how a host supplies the things the library refuses to do for itself: analytics, submission, durable storage, settled results, round state, sound and haptics. Every method arrives as a plain function, so the library imports no SDK, opens no socket and calls no fetch. A host that forgets a method gets a compile error rather than a runtime surprise. With no provider at all the built-in adapter runs, keeping state in memory and settling synchronously, so a developer with nothing wired up still gets a game that works and a player cannot tell which implementation is running. Performs nothing: it renders no element, writes no storage and decides no outcome.",
+      "categories": [
+        "Foundations"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/adapter/adapter.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/adapter.tsx"
+        }
+      ],
+      "docs": "Wrap the game in `<GamestageProvider adapter={yourAdapter}>` once, or wrap nothing at all and get the built-in. Inside a component, call `useGamestageElement(elementId)` for `{ player, state, results, settlement, select, commit, report, cue, store }`. Call `commit(optionIds, { optimistic })` with the result you would render anyway: it goes on screen in the same tick as the tap, `settlement` reads `optimistic`, and when the host answers it reads `settled` if the host agrees and `corrected` if it does not. Those are the values `data-gs-settlement` takes, so pass `settlement` straight to `<Stat settlement={...} />`. `submit` returns void and never a promise, because a component that could await a settlement would, and the player would watch a spinner where the feedback should be; the host answers through `subscribeForResults` instead. Components that take an `elementId` prop, such as `choice`, wire themselves up through this hook: give one an id and its selects, commits and settled outcomes travel over the adapter instead of over props. Build a host-backed adapter from scratch, or from `createBuiltinAdapter({ settle })` when only settlement differs."
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "The action a player takes that is not a choice: start, continue, play again, claim, share. Primary and secondary, default and large. Pressable controls move rather than fade, so the offset base collapses and the face lands where the base was. Disabled goes flat because it is never coming back; locked keeps its shape and shows a padlock because it is available later, and a player can tell those apart at a glance. Reads tokens only, so a theme change reaches it. Reports the press to the host; it does not start a round, claim a reward or share a result itself, and it does not fetch or settle anything. Use `choice` when the player is answering a question from presented options, and `selector` when they are picking one value from a set, such as a difficulty or a predicted goal total.",
+      "categories": [
+        "Controls"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/glyphs",
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/button/button.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/button.tsx"
+        },
+        {
+          "path": "packages/ui/src/button/button.css",
+          "type": "registry:style",
+          "target": "components/gamestage/button.css"
+        }
+      ],
+      "docs": "Use variant=\"primary\" for the one action on the surface and \"secondary\" for everything beside it. Use size=\"large\" for the hero action a player is meant to reach for. Pass `locked` when the action opens later and `disabled` when it never will. Locked refuses the click, including the one Enter and Space synthesise, but stays focusable so a screen reader can still describe it; disabled uses the native attribute and leaves the tab order."
+    },
+    {
+      "name": "choice",
+      "type": "registry:ui",
+      "title": "Choice",
+      "description": "One question, several answers, five presentations. Renders as buttons, cards, a list, a wheel or an overlay from the same component and the same state machine. Reports what the player picked and committed; never decides whether it was right. Pass the settled outcome back as `result` and it renders correct, wrong or rewarded with a fill, a glyph and a text change so the answer survives colour blindness, mute and reduced motion.",
+      "categories": [
+        "Controls"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/adapter",
+        "@gamestage/glyphs",
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/choice/choice.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/choice.tsx"
+        },
+        {
+          "path": "packages/ui/src/choice/choice.css",
+          "type": "registry:style",
+          "target": "components/gamestage/choice.css"
+        }
+      ],
+      "docs": "Use presentation=\"buttons\" for a quiz grid, \"cards\" for a picker, \"list\" for long text answers, \"wheel\" for a spinner and \"overlay\" for a choice over a live scene. Set commitOnSelect for fast rounds; leave it off when the player should be able to change their mind. Give it an `elementId` and it wires itself to the host adapter: selects and commits reach `track` and `submit`, and settled outcomes arrive through `subscribeForResults` with no `result` prop at all. Leave the id off and it behaves exactly as before, with the host driving `result`."
+    },
+    {
+      "name": "coach-mark",
+      "type": "registry:ui",
+      "title": "Coach mark",
+      "description": "The bubble that points at one control and says what it is for. Guidance beside the game, not a dialog in front of it: it is dismissible by keyboard, Escape closes it from wherever focus happens to be, and it never traps focus, never takes it and adds exactly one stop to the tab order. `data-gs-placement` is where it sits and `data-gs-anchor` is the id of the element it points at, and placement is CSS driven by the attribute rather than a positioning library. Dismissal is a state rather than an unmount, so `data-gs-dismissed=\"true\"` tells a test that the player closed it. Performs nothing: it does not decide when to appear, remember that it was closed, or advance a sequence.",
+      "categories": [
+        "Flow and guidance"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/coach-mark/coach-mark.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/coach-mark.tsx"
+        },
+        {
+          "path": "packages/ui/src/coach-mark/coach-mark.css",
+          "type": "registry:style",
+          "target": "components/gamestage/coach-mark.css"
+        }
+      ],
+      "docs": "Give it both halves of where it points: `anchor` is the id of the control the guidance is about, `placement` is where the bubble sits inside its container. It positions against the nearest positioned ancestor, so put `position: relative` on the surface the guidance belongs to. Pass `dismissed` and `onDismiss` as a controlled pair: the host owns whether it is closed and what closing remembers, and a coach mark with no `onDismiss` renders no close control and binds no Escape handler. Pass `step` and `max` for \"2 of 5\", and `active` for the one a sequence is on now. Render one at a time: they all answer Escape."
+    },
+    {
+      "name": "code-entry",
+      "type": "registry:ui",
+      "title": "Code entry",
+      "description": "The one-time code surface: one character per box, the whole code reported on the last one so nobody presses a button after typing a code they can see is complete, and a resend that is locked rather than missing while the host is still counting down. It checks nothing and sends nothing. A refused code arrives as `invalid` plus the host's own sentence, which is why an unfinished code looks nothing like a wrong one, and the boxes change stroke, pattern and words together rather than only colour. There is one input behind the boxes, not six: six break paste, break one-time-code autofill and give a screen reader six unlabelled boxes. The countdown does not tick here; `resendIn` is seconds the host owns.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/button"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/code-entry/code-entry.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/code-entry.tsx"
+        },
+        {
+          "path": "packages/ui/src/code-entry/code-entry.css",
+          "type": "registry:style",
+          "target": "components/gamestage/code-entry.css"
+        }
+      ],
+      "docs": "Pass `onComplete` and send the code from there; `onChange` is there when you want every keystroke. `length` defaults to 6. Hold `value` yourself when you want to clear the boxes after a refusal, or leave it out and the component holds it in memory. Set `invalid` and `reason` when your check comes back wrong, and `busy` while it is in flight. For the resend, count down in your own state and pass `resendIn` in seconds with `onResend`: above zero the control is locked and says how long, at zero it is available. Read the state with `[data-gs-value]` against `[data-gs-max]`, and find a box with `[data-gs-scope=\"code-entry\"][data-gs-part=\"3\"]`."
+    },
+    {
+      "name": "cues",
+      "type": "registry:base",
+      "title": "Gamestage cues",
+      "description": "The game-feel runtime: juice level from none to maximum, sound and haptic playback behind an adapter, and the host's own mute honoured alongside a best-effort OS silent-switch signal. It plays nothing itself; the token file says what a cue means and this hands the allowed ones to the host. No asset files yet (GSUI-38 attaches them), so today playing a cue means recording that it fired, in order.",
+      "categories": [
+        "Foundations"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/runtime/feel/feel.tsx",
+          "type": "registry:lib",
+          "target": "lib/gamestage-feel/feel.tsx"
+        },
+        {
+          "path": "packages/ui/src/runtime/feel/cue-catalogue.ts",
+          "type": "registry:lib",
+          "target": "lib/gamestage-feel/cue-catalogue.ts"
+        },
+        {
+          "path": "packages/ui/src/runtime/feel/juice.ts",
+          "type": "registry:lib",
+          "target": "lib/gamestage-feel/juice.ts"
+        },
+        {
+          "path": "packages/ui/src/runtime/feel/haptics.ts",
+          "type": "registry:lib",
+          "target": "lib/gamestage-feel/haptics.ts"
+        },
+        {
+          "path": "packages/ui/src/runtime/feel/os-mute.ts",
+          "type": "registry:lib",
+          "target": "lib/gamestage-feel/os-mute.ts"
+        },
+        {
+          "path": "packages/ui/src/runtime/feel/sound-adapter.ts",
+          "type": "registry:lib",
+          "target": "lib/gamestage-feel/sound-adapter.ts"
+        },
+        {
+          "path": "packages/ui/src/runtime/feel/index.ts",
+          "type": "registry:lib",
+          "target": "lib/gamestage-feel/index.ts"
+        }
+      ],
+      "cssVars": {},
+      "docs": "Wrap the part of the tree that plays a game in <GameFeelProvider>, then call useGameFeel().cue(name, kind) wherever a state change happens: a settled correct fires cue('correct', 'sfx'), a light tap fires cue('light', 'haptic'). Pass `muted` from the host's own mute switch; the provider ORs it with a best-effort OS silent-switch signal, so either can silence sound and neither can force it back on. Pass `juice` ('none' | 'reduced' | 'standard' | 'maximum') to scale celebration: essential cues, the confirmation of what the player just did, are never gated by juice, only by mute. `hapticsOff` gates navigator.vibrate independently of sound. No sound or haptic actually plays yet: GSUI-38 attaches real assets to the same cue names."
+    },
+    {
+      "name": "discovery",
+      "type": "registry:ui",
+      "title": "Discovery",
+      "categories": [
+        "Application surfaces"
+      ],
+      "description": "What there is to play, and the way into it. One tile per game, each carrying `data-gs-availability` for which of three things is true of it: live, upcoming, or ended. That is host-declared, because the library holds no clock, so an upcoming game whose countdown reaches zero stays upcoming until the host says otherwise. A tile is not a choice: picking one is not answering a question, so it carries `data-gs-item` and never `data-gs-choice`, `data-gs-selected` or `data-gs-committed`. Each tile has one control whose label is the verb of its outcome, and every control's accessible name carries the game's name, because four tiles offering \"Join\" are four identical controls to anyone reading them out. The art is a node the host supplies; a tile without it keeps a filled media area rather than showing a blank rectangle. It performs nothing: it fetches no list, opens nothing, and remembers no reminder.",
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/button"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/discovery/discovery.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/discovery.tsx"
+        },
+        {
+          "path": "packages/ui/src/discovery/discovery.css",
+          "type": "registry:style",
+          "target": "components/gamestage/discovery.css"
+        },
+        {
+          "path": "packages/tokens/primitives.css",
+          "type": "registry:style",
+          "target": "components/gamestage/gamestage-primitives.css"
+        }
+      ],
+      "docs": "Pass `games` in the order you want them shown and `label` as the list's accessible name. Set each game's `availability` yourself and update it when your own clock says so; the component never changes it. Pass `art` as a node, an `img` or a poster of your own, and leave it out when you have none. Pass `featured` to render the first game as a full-width hero tile. Pass `availabilityWords` to translate live, starts soon and ended. Render an `empty-state` in place of this component when there is nothing to list, and an `error-state` when the list failed to load: discovery shows games and says nothing about why there are none."
+    },
+    {
+      "name": "empty-state",
+      "type": "registry:ui",
+      "title": "Empty state",
+      "categories": [
+        "Application surfaces"
+      ],
+      "description": "The surface with nothing to show, and the way out of it. BDS-042 forbids a blank scene, so this says what is missing, says what fills it, and renders the one control that does so. The next step is rendered from `actionLabel` and `onAction` rather than passed in as a node, which is what makes `data-gs-next-action` appear exactly once: a test counts it, and an empty surface with no way forward fails the gate rather than reaching a player. Optional ghost rows draw the shape of what is coming, hidden from assistive technology because two silent rows read out as nothing is worse than no rows at all. The accessible name carries the contract's empty word, so the state is not a shade of grey. It performs nothing: it does not fetch the missing content, retry, or decide that the surface is empty.",
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/button"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/empty-state/empty-state.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/empty-state.tsx"
+        },
+        {
+          "path": "packages/ui/src/empty-state/empty-state.css",
+          "type": "registry:style",
+          "target": "components/gamestage/empty-state.css"
+        },
+        {
+          "path": "packages/tokens/primitives.css",
+          "type": "registry:style",
+          "target": "components/gamestage/gamestage-primitives.css"
+        }
+      ],
+      "docs": "Render it in place of the surface that has nothing in it, never beside one. Pass `label` for what is missing, the children for the sentence that says what fills it, and `actionLabel` with `onAction` for the next step, phrased as the verb of its outcome: \"Play a round\", not \"OK\". Pass `ghosts` when the surface is a list and the shape of a row tells the player what is coming. Pass `stateWord` to translate the empty word the accessible name carries. Reach for `error-state` instead when the surface failed rather than being empty: a network failure is not an absence, and rendering it as one hides the cause."
+    },
+    {
+      "name": "error-state",
+      "type": "registry:ui",
+      "title": "Error state",
+      "categories": [
+        "Application surfaces"
+      ],
+      "description": "The surface that failed, naming the cause and the next action. BDS-042: \"something went wrong\" leaves the player with nothing to do, which is worse than the error, so `cause`, `label`, `actionLabel` and `onAction` are all required and the control is rendered here rather than passed in, which makes `data-gs-next-action` appear exactly once for a test to count. It does not know what failed: `cause` is host-supplied and so is every word on screen, and `network`, `rejected`, `expired`, `not-found` and `unknown` are the recommended vocabulary rather than a closed set, which is why the prop is a string. It never carries `data-gs-state=\"wrong\"`, because a network failure is not a wrong answer and rendering it as one gives a failed submit a cross and a strikethrough. Two shapes: a centred panel for a surface that failed as a whole, and an inline row for a submit that did not land. Never a modal.",
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/button"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/error-state/error-state.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/error-state.tsx"
+        },
+        {
+          "path": "packages/ui/src/error-state/error-state.css",
+          "type": "registry:style",
+          "target": "components/gamestage/error-state.css"
+        },
+        {
+          "path": "packages/tokens/primitives.css",
+          "type": "registry:style",
+          "target": "components/gamestage/gamestage-primitives.css"
+        }
+      ],
+      "docs": "Render it where the failure happened. Pass `cause` as the token your own system already uses for the failure, `label` as the short line a player reads, the children for what was lost and what was not, and `actionLabel` with `onAction` for the next step. Pass `causeWord` so the accessible name says the cause in words rather than in a token. Pass `layout=\"inline\"` for a submit that did not land, and leave it at `panel` for a surface that failed as a whole. Reach for `empty-state` instead when there is simply nothing to show: an absence is not a failure, and reporting one as the other invents a cause."
+    },
+    {
+      "name": "feedback",
+      "type": "registry:ui",
+      "title": "Feedback",
+      "description": "The response to the player's last act: correct, wrong, score or reward. A wrong answer shakes, a score increment floats up and fades, and the message itself changes colour, glyph and text so it survives reduced motion, mute and colour blindness alike. Renders synchronously with its props, because the gap between a tap and this element appearing is the library's 100ms budget. Performs nothing: it does not decide whether the last act was right, does not know the running score, and does not settle a reward.",
+      "categories": [
+        "Game feel"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/feedback/feedback.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/feedback.tsx"
+        },
+        {
+          "path": "packages/ui/src/feedback/feedback.css",
+          "type": "registry:style",
+          "target": "components/gamestage/feedback.css"
+        }
+      ],
+      "docs": "Pass `variant` to say which of the four contract outcomes this is. Pass `message` for the host's own copy (the reason an answer was wrong, a reward's name); leave it out and a default word for the variant renders instead. Pass `delta` on a `score` variant for the signed amount that floats up, e.g. 50 or -10. Mount it fresh per settlement (a changing `key` works well) rather than toggling it, since the shake and the float are entrance animations that play once, on mount."
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "description": "One thing a player types or ticks, with its label, its requirement and its reason. BDS-040 is the visible rule and it rides `data-gs-elevation`: a text, email, tel, password or number field is `inset` and a checkbox or radio is `raised`, so a player can tell what they type into from what they press. It validates nothing: `invalid` is the host's word and `reason` is the host's sentence, carried to a screen reader through `aria-invalid` and `aria-describedby` rather than only shown. Required and optional are words on screen plus `aria-required`, never an asterisk and never a colour. A consent box is never pre-checked by the component. One value out of a known set is `selector`, not this.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/field/field.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/field.tsx"
+        },
+        {
+          "path": "packages/ui/src/field/field.css",
+          "type": "registry:style",
+          "target": "components/gamestage/field.css"
+        }
+      ],
+      "docs": "Pass `name`, `label` and the `control` the player works: `text` is the default, `checkbox` and `radio` are pressed and render raised. Pass `requirement` to state required or optional in words. Pass `invalid` and `reason` together when your own validation fails a value; the field never decides that itself, and a `reason` on its own is a rule explained rather than a failure. Anything else you pass reaches the `<input>`, so `value`, `onChange`, `placeholder`, `inputMode` and `autoComplete` all work as they do on a native control. Find a field with `[data-gs-field=\"<name>\"]` and its control with `[data-gs-part=\"control\"]`."
+    },
+    {
+      "name": "fonts-arcade",
+      "type": "registry:font",
+      "title": "Gamestage fonts, arcade",
+      "description": "Bungee for the numbers and actions a player tracks, DM Sans for interface text, linked from Google Fonts. The arcade theme names Bungee as its display family; this item is what puts it on the page. Installed for you by @gamestage/theme-arcade.",
+      "categories": [
+        "Foundations"
+      ],
+      "font": {
+        "family": "Bungee",
+        "provider": "google",
+        "import": "",
+        "variable": "--gs-type-font-family-display",
+        "weight": [
+          "400"
+        ],
+        "subsets": [
+          "latin"
+        ]
+      },
+      "files": [
+        {
+          "path": "packages/tokens/fonts-arcade.css",
+          "type": "registry:style",
+          "target": "app/gamestage-fonts-arcade.css"
+        }
+      ],
+      "docs": "Import gamestage-fonts-arcade.css once at the root, before gamestage-tokens.css, in place of gamestage-fonts.css. The `font` block is metadata the installer reads for nothing; the Google Fonts `@import` in the stylesheet loads the family, and `font.import` is blank because BDS-005 chose to link Google Fonts rather than self-host. A theme can name any family it likes, because the families are tokens; what it cannot do is load one, and a theme whose family is not loaded falls through its stack in silence and looks like a theme that changed nothing."
+    },
+    {
+      "name": "fonts-paper",
+      "type": "registry:font",
+      "title": "Gamestage fonts, paper",
+      "description": "IBM Plex Sans for interface text and Instrument Serif for the numbers a player tracks, linked from Google Fonts. Neither is in the base pairing, so a paper install without this item renders in system-ui and Georgia. Installed for you by @gamestage/theme-paper.",
+      "categories": [
+        "Foundations"
+      ],
+      "font": {
+        "family": "IBM Plex Sans",
+        "provider": "google",
+        "import": "",
+        "variable": "--gs-type-font-family-interface",
+        "weight": [
+          "400",
+          "500",
+          "600",
+          "700"
+        ],
+        "subsets": [
+          "latin"
+        ]
+      },
+      "files": [
+        {
+          "path": "packages/tokens/fonts-paper.css",
+          "type": "registry:style",
+          "target": "app/gamestage-fonts-paper.css"
+        }
+      ],
+      "docs": "Import gamestage-fonts-paper.css once at the root, before gamestage-tokens.css, in place of gamestage-fonts.css. `font.import` is blank for the reason given on @gamestage/fonts."
+    },
+    {
+      "name": "fonts",
+      "type": "registry:font",
+      "title": "Gamestage fonts",
+      "description": "DM Sans for interface text and Unbounded for numbers a player tracks (score, timer, rank, multiplier, level), linked from Google Fonts. Kept in a separate stylesheet so a customer with their own typeface can replace the font loading without forking the components. Renders nothing, creates no DOM and sets no root attribute: it loads font faces and does not apply the token styles. `tokens` lists this item as a registry dependency, so installing tokens installs it too, and the fonts stylesheet is imported before the tokens stylesheet. For a customer typeface, supply that font stylesheet and override the font tokens rather than importing this one.",
+      "categories": [
+        "Foundations"
+      ],
+      "font": {
+        "family": "DM Sans",
+        "provider": "google",
+        "import": "",
+        "variable": "--gs-type-font-family-interface",
+        "weight": [
+          "400",
+          "500",
+          "600",
+          "700",
+          "800",
+          "900"
+        ],
+        "subsets": [
+          "latin"
+        ]
+      },
+      "files": [
+        {
+          "path": "packages/tokens/fonts.css",
+          "type": "registry:style",
+          "target": "app/gamestage-fonts.css"
+        }
+      ],
+      "docs": "Imports DM Sans (interface text, weights 400-900) and Unbounded (numbers a player tracks, weights 500-900) from Google Fonts, mirroring examples/lab/index.html. Import gamestage-fonts.css once at the root, before gamestage-tokens.css. The `font` block is metadata: the installer reads it for nothing, and the Google Fonts `@import` in gamestage-fonts.css is the only loading mechanism this item ships. `font.import` is blank because BDS-005 decided to link Google Fonts rather than self-host the family. Self-hosting was considered and deferred: linking is one line and a third-party request on every page load, self-hosting is a licence question and roughly 300KB; revisit at the stage 11 cold-load budget work."
+    },
+    {
+      "name": "form",
+      "type": "registry:ui",
+      "title": "Form",
+      "description": "One set of fields a player fills in and sends together. It does not submit: it cancels the browser's own submission, reads what the player typed out of the fields and hands it to the host as `{ fieldName: value }`, and the host does the network call, the validation and the decision about what happens next. Errors come back from the host as sentences, render as a summary above the fields and are counted on `data-gs-error-count`, so a test reads the number without parsing the prose. `busy` is the window between the player pressing send and the host answering: it is host-declared, it rides `data-gs-busy` and `aria-busy`, and the form says so in words rather than sitting unchanged, which is the dead end the spec forbids.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/field",
+        "@gamestage/button"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/form/form.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/form.tsx"
+        },
+        {
+          "path": "packages/ui/src/form/form.css",
+          "type": "registry:style",
+          "target": "components/gamestage/form.css"
+        }
+      ],
+      "docs": "Pass `name` and `label`, put `field` components in the children and the submit control in `actions`. `onSubmit` gives you `(values, event)` where `values` is what the player typed, keyed by each field's `name`; an unticked checkbox is absent, exactly as it is in a native submission. Set `busy` while your own call is in flight and clear it when you answer, and pass `errors` as `[{ field, reason }]` when you reject values. Find the summary with `[data-gs-part=\"summary\"]` and the count with `[data-gs-error-count]`."
+    },
+    {
+      "name": "glyphs",
+      "type": "registry:ui",
+      "title": "Glyphs",
+      "description": "The marks the library draws when a state needs a second signal beside its colour: a padlock for locked, an open box for an empty collection. Inline SVG taking `currentColor` and sized at `1em`, so a glyph inherits the colour and the size the control around it already computed from tokens, and a theme change reaches it. These replaced colour emoji, which render in the reader's own emoji font: they ignore every colour token, so a gold padlock sat on an arcade-blue button, and they change silhouette between macOS, Windows and Android, so the same locked control is a different drawing per machine. Every glyph is `aria-hidden`, because the state it marks is already in words on the control's accessible name. Installed on its own by `button`, `choice`, `selector`, `slider`, `reward` and `inventory`, so a customer who installs several of them gets one padlock rather than several that can drift apart. Performs nothing and holds no state: it is geometry.",
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/glyphs/glyphs.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/glyphs.tsx"
+        },
+        {
+          "path": "packages/ui/src/glyphs/glyphs.css",
+          "type": "registry:style",
+          "target": "components/gamestage/glyphs.css"
+        }
+      ],
+      "docs": "Render one inside the element that already marks the part: `<span data-gs-scope=\"button\" data-gs-part=\"glyph\" data-gs-animates=\"emphasis\" aria-hidden=\"true\"><LockGlyph /></span>`. The span sets the size with `font-size: var(--gs-size-icon-control)` or `--gs-size-icon-hero` and the colour with a token, and the glyph takes both. Mark it `emphasis` and never `motion`: a glyph is usually the only signal a state has that is not a colour, so it has to survive reduced motion. Do not give a glyph its own accessible name; put the state in words on the control, which is what the accessible-name table in docs/attribute-contract.md already requires. Adding a glyph means adding a function to glyphs.tsx, not a second icon file: one item is why a customer installing button, choice and slider gets one padlock."
+    },
+    {
+      "name": "hud",
+      "type": "registry:ui",
+      "title": "Hud",
+      "description": "Everything true about the game right now, as one object: score, timer, lives, streak, and any other number as a stat. It is the library's first component made of components and it is deliberately thin, rendering no number, no glyph and no accessible-name vocabulary of its own. It carries no `data-gs-value`, because a HUD has no number and a container repeating one of the numbers inside it would give a test two elements answering for the same fact; `[data-gs-component=\"hud\"] [data-gs-stat=\"score\"]` finds the score. Parts it is not given are absent rather than zero, so a game with no lives system shows no hearts. Performs nothing itself, with the one exception it does not own: passing a timer starts a clock, exactly as rendering a timer would.",
+      "categories": [
+        "Game state"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/score",
+        "@gamestage/timer",
+        "@gamestage/lives",
+        "@gamestage/streak",
+        "@gamestage/stat"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/hud/hud.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/hud.tsx"
+        },
+        {
+          "path": "packages/ui/src/hud/hud.css",
+          "type": "registry:style",
+          "target": "components/gamestage/hud.css"
+        }
+      ],
+      "docs": "Pass `score`, `timer`, `lives`, `streak` as the props each of those components takes, and the HUD renders the ones you passed, in that order. Pass `stats` for anything the four do not cover: a round, a rank, a multiplier, an XP total, each of them a `stat` so it gets the same typeface, the same tabular numerals and the same announcement rather than a second way of writing a number. Pass `placement` for where the group sits in whatever contains it; `left` and `right` render as a column. Read a number through the component that owns it, `[data-gs-component=\"score\"] [data-gs-value]`, never through the first `[data-gs-value]` on the page: a HUD is four numbers and an unscoped selector now has four answers. Every rule in `hud.css` is scoped through `.gs-hud`, and that is a requirement rather than a style preference: a bare `.gs-stat` rule here would tie with the one in `stat.css` and a tie is decided by whichever stylesheet the bundler put last."
+    },
+    {
+      "name": "identity",
+      "type": "registry:ui",
+      "title": "Identity",
+      "description": "One player, rendered: an avatar, a name, and whatever the host puts beside them. The three avatar cases are on `data-gs-avatar` as `image`, `fallback` and `none`, so a test asserts which one landed without hunting for an `<img>`, and a failed image falls back to initials rather than leaving a hole. Signed out is a first-class state: pass `player={null}` and it renders the designed case, carrying `data-gs-anonymous`. Presence and `you` change the accessible name as well as the pixels. It renders identity and never performs authentication: no network call, no cookie, no token, no identity provider.",
+      "categories": [
+        "Player"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/identity/identity.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/identity.tsx"
+        },
+        {
+          "path": "packages/ui/src/identity/identity.css",
+          "type": "registry:style",
+          "target": "components/gamestage/identity.css"
+        }
+      ],
+      "docs": "Pass the adapter's `player`, or `null` before sign-in; both are supported renderings and the null one is what every identity surface shows first. `data-gs-anonymous` is your word that there is no player, never a check this component made and never a security boundary: hiding content behind it is client-side access control, which this library does not do. Pass `you` for the row belonging to the player holding the device, `presence` when you know whether they are here, and `avatar={false}` for a dense row that wants the name alone. Children render beside the name and stay announced, so a stat, a badge or a control can sit in the row. The avatar's shape comes from `--gs-shape-identity`, which the arcade theme sets to `circle`."
+    },
+    {
+      "name": "inventory",
+      "type": "registry:ui",
+      "title": "Inventory",
+      "description": "Everything a player has, in one place: a collection of `reward` and nothing more. It renders the list the host gives it, in the host's order, and passes one reveal handler down to whichever reward is waiting. The case it exists to get right is the empty one, which is the first thing a new player sees: no rewards means `data-gs-empty=\"true\"`, a designed empty state with a glyph and a line of copy rather than a blank rectangle, and \"nothing here yet\" in the accessible name. A real list when it has items, so a screen reader is told how many before reading them. Performs nothing: it does not fetch the collection, sort it, paginate it or claim anything.",
+      "categories": [
+        "Rewards"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/glyphs",
+        "@gamestage/reward"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/inventory/inventory.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/inventory.tsx"
+        },
+        {
+          "path": "packages/ui/src/inventory/inventory.css",
+          "type": "registry:style",
+          "target": "components/gamestage/inventory.css"
+        }
+      ],
+      "docs": "Pass `rewards` as the list, already in the order you want it; this component never sorts. Pass `onReveal` once for the whole collection and it reaches every reward, or set one per reward to override it. Pass `emptyLabel` to say something about your own game to a player with nothing yet; the accessible name keeps the contract's \"nothing here yet\" whatever the copy says, so a test and a screen reader agree across every host. It brings `reward` with it, and both install into components/gamestage/<name>/ so the import between them resolves the same here and in your app."
+    },
+    {
+      "name": "leaderboard",
+      "type": "registry:ui",
+      "title": "Leaderboard",
+      "description": "Ranked rows with a pinned \"you\" row and a designed empty case. The row carries `data-gs-rank` and the score inside it is a `stat` carrying `data-gs-value`, because one element's value cannot carry two numbers. Rank movement is the sign of `data-gs-delta`: there is no trend attribute. Rows travel to their new places over the reorder token and stop dead under reduced motion, where the order is still correct because it is the DOM order. The pinned row is the same row with a second marker, not a second component. Performs nothing: the host owns the order, the paging and who moved.",
+      "categories": [
+        "Competition"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/identity",
+        "@gamestage/stat"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/leaderboard/leaderboard.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/leaderboard.tsx"
+        },
+        {
+          "path": "packages/ui/src/leaderboard/leaderboard.css",
+          "type": "registry:style",
+          "target": "components/gamestage/leaderboard.css"
+        }
+      ],
+      "docs": "Hand `entries` over already ranked; this never sorts and never pages. Set `you` on the player's entry and a pinned copy of that row is held on screen, marked `data-gs-pinned`; pass `pinYou={false}` where the board is short enough not to need it. Set `delta` to the signed number of places a row just moved and the badge and the colour follow the sign. A reordering list is a screen-reader trap, so the list itself is not a live region: one polite status announces the player's own rank change and nothing else. An empty board renders `data-gs-empty=\"true\"` with a designed empty case; pass `emptyAction` to give it the next step. Player names are rendered as text, never as markup. Installs into `components/gamestage/leaderboard/` rather than flat beside the others, so that its relative import of `stat` resolves to the same file in an installed app as it does in this repo. Changing the target to a flat file breaks that import."
+    },
+    {
+      "name": "level-ring",
+      "type": "registry:ui",
+      "title": "Level ring",
+      "description": "The same progress, drawn round: an SVG ring for a level, an XP bar or anything with something to show in the middle. A separate component rather than a variant of `progress-bar` because a ring and a bar share no layout code, and identical in meaning because they share the contract: `data-gs-value` over `data-gs-max`, the same four states, and the same `--gs-progress` custom property carrying the fraction. `pathLength=\"1\"` makes the dash array a fraction of the way round, so the stylesheet never needs the circumference, and the stroke reads a colour token like every other colour. The stroke travels over the fill motion token and stops dead under reduced motion, so completion also changes the stroke's colour and adds a glyph, which are emphasis and survive. Performs nothing: it does not award XP or advance the level, and reaching `max` does not mark it complete; the host supplies the value and declares completion. Use `progress-bar` when the player needs a horizontal track showing how far through the round they are, with no content in the middle.",
+      "categories": [
+        "Progress"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/level-ring/level-ring.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/level-ring.tsx"
+        },
+        {
+          "path": "packages/ui/src/level-ring/level-ring.css",
+          "type": "registry:style",
+          "target": "components/gamestage/level-ring.css"
+        }
+      ],
+      "docs": "Takes the same props as `progress-bar`: `value` with `max`, `indeterminate` when there is no fraction, `min` for a floor that is not zero, `complete` when the host says so, and `format` for the announced figure. Children go in the middle and are never announced, because the ring's own accessible name already carries the number, so a level number, an icon or a `Stat` can sit there without being read twice. Size the ring by setting width and height on the root; the stroke does not scale with it, by design."
+    },
+    {
+      "name": "lives",
+      "type": "registry:ui",
+      "title": "Lives",
+      "description": "How many attempts a player has left, drawn as a pill of dots beside the number. A thin wrapper over stat and, since the presentation prop, an genuinely thin one: the number, the label, the change beside it, the announcement and the dots themselves are all stat's, and lives adds the kind, the component name and the silhouette. `value` is lives remaining and `max` the total, so zero is a real state and reads as \"lives, 0 of 3\" with three dashed dots still drawn, because a player should be able to see what they had. A life just lost is `delta={-1}`, not a state of its own. A held life is a solid dot and a spent one is the same circle left empty and dashed, so fill, stroke style and weight all differ and the loss survives colour blindness, a muted tab and reduced motion. Performs nothing: it does not take a life or decide when one left is critical.",
+      "categories": [
+        "Game state"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/stat"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/lives/lives.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/lives.tsx"
+        }
+      ],
+      "docs": "Pass `value` as lives remaining and `max` as the total; the dots are drawn from those two numbers and nothing else carries them, so there is one source of truth for one count. Pass `delta={-1}` on the render after a life goes, and stat renders the change beside the number. Pass `critical` when the host decides the player is down to the last of them; stat turns its own number and glyph and the dots follow, with no second attribute. The dots are `aria-hidden`, because stat already announces \"lives, 1 of 3\" and announcing them again would read the number twice. There is no stylesheet of its own: `presentation=\"dots\"` is drawn by `@gamestage/stat`, which lives already depends on. Pass `presentation` to draw the number some other way; `dots` is the default because it is what the design draws."
+    },
+    {
+      "name": "login",
+      "type": "registry:ui",
+      "title": "Login",
+      "description": "The sign-in surface, rendered. BDS-041: it never performs authentication. No network call, no cookie, no token, no identity provider; it collects what the player typed and reports it, and the host sends the code, checks the password and decides who this is. Three ways in, in the order the design draws them: an identifier field with the primary action, then the providers under a divider, then the way past all of it. The escape is part of the surface rather than something a host remembers to add, because a player who will not sign in is a player who leaves. Refusal is the host's word and arrives as `invalid` plus a reason; `busy` is host-declared and takes every control out of reach while the host has not answered.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/form",
+        "@gamestage/field",
+        "@gamestage/button"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/login/login.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/login.tsx"
+        },
+        {
+          "path": "packages/ui/src/login/login.css",
+          "type": "registry:style",
+          "target": "components/gamestage/login.css"
+        }
+      ],
+      "docs": "Pass `onSubmit` and read the identifier out of the values it hands you; send your own code or check your own password from there. Pass `providers` as `[{ id, label, icon }]` and `onProvider` to open each one yourself, drawing any mark as inline SVG on `currentColor`. Pass `onGuest` when your game has somewhere for a player to go without an account, and leave it out when it does not. While your own call is in flight set `busy`; when it comes back refused, set `invalid` and pass your own sentence as `reason`. Find the escape with `[data-gs-part=\"guest\"]` and each provider with `[data-gs-part=\"provider\"]`."
+    },
+    {
+      "name": "media-frame",
+      "type": "registry:ui",
+      "title": "Media frame",
+      "description": "The space a piece of the host's media occupies, and nothing else. It is not a video player and must never become one: the video, the 3D scene, the canvas and the embed belong to the host, exactly as a stage's scene does, and the frame renders whatever it is passed without loading, decoding, buffering, playing, pausing, seeking or timing any of it. What it does own is the space. It holds an aspect ratio and a floor height, so a frame whose source has not arrived is the same size as one that worked and nothing under it jumps when the media lands. A frame with nothing in it is a designed empty state carrying `data-gs-empty`, naming what belongs there and the shape it is holding, never a blank rectangle; a frame the host has declared `data-gs-busy` still shows that content, which is what the attribute contract requires. `data-gs-playing` is the host's word repeated, on the same footing as busy: the host declares it and the library never infers it, because the frame never touches the media.",
+      "categories": [
+        "Media"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/media-frame/media-frame.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/media-frame.tsx"
+        },
+        {
+          "path": "packages/ui/src/media-frame/media-frame.css",
+          "type": "registry:style",
+          "target": "components/gamestage/media-frame.css"
+        }
+      ],
+      "docs": "Pass `label`, which is what belongs in the frame in your own words: \"portrait video\", \"the qualifying replay\". It is required rather than defaulted, because a frame that cannot say what it is waiting for is the blank rectangle this component exists to prevent, and it is the frame's accessible name. Pass the media itself as children: a `<video>`, a `<canvas>`, an `<img>`, an iframe, a Unity build. The frame puts the node in its cell and does not look at it again. Pass `format` for the shape, `portrait` by default, and `ratio` as `width:height` when the format's own default is not it; the ratio travels to the stylesheet as the `--gs-media-frame-aspect` custom property rather than as an attribute, because a ratio is geometry and nothing selects on geometry. `busy` and `playing` are yours to declare and the frame never works either of them out: it has no way to, because it never touches the media. Pass nothing at all as children and the frame renders its empty state, which is a supported case rather than a failure. Making the media play, pause or advance is your application's job. No component in this library does it, and this one is built so that it cannot start."
+    },
+    {
+      "name": "milestones",
+      "type": "registry:ui",
+      "title": "Milestones",
+      "description": "The rewards that sit on a progress track: the ones reached, the one being worked towards, and the ones still locked. The track is a real `progress-bar` rather than a second bar written here, so there is one fill geometry and one set of state words; BDS-022 makes `progress-bar` the base for this component for that reason, and the nested bar keeps its own root marker so a test can tell composition from reimplementation. Each marker rides on `data-gs-milestone` and carries its state as `data-gs-complete`, `data-gs-active` or `data-gs-locked`, never as a colour: a reached one shows a tick, a locked one a padlock, and the current one is larger as well as brighter. There is no `data-gs-progress` and no `data-gs-fill`; a marker's position is a custom property, which is not an attribute. Performs nothing: it never decides a milestone is reached, unlocks one, or claims a reward.",
+      "categories": [
+        "Progress"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/progress-bar"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/milestones/milestones.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/milestones.tsx"
+        },
+        {
+          "path": "packages/ui/src/milestones/milestones.css",
+          "type": "registry:style",
+          "target": "components/gamestage/milestones.css"
+        }
+      ],
+      "docs": "Pass `value`, `max` and optionally `min` for the track, and `milestones` for what sits on it. A milestone's position comes from its `at`, in the same units as the value, not from its place in the array. Pass `complete`, `active` or `locked` per milestone: the component never works out that a milestone is reached from the value passing it, because the host owns that decision and a reward the host has not settled must not look settled. Pass `children` on a milestone for what rides inside the marker, such as a multiplier. It imports `./progress-bar`, which is the flat path a `gamestage-ui add` produces, and `@gamestage/progress-bar` is what puts the file there."
+    },
+    {
+      "name": "multiplier",
+      "type": "registry:ui",
+      "title": "Multiplier",
+      "description": "The score multiplier, as a thin wrapper over `stat`: it renders `x3` where stat renders `3`. `data-gs-value` still carries `3`, so a host and a test read the number without parsing the x. The typeface, the tabular numerals, the label, the change beside the number and every settlement state are stat's and unchanged. It fixes `kind=\"multiplier\"` so the host does not have to remember the kind, and a test can find it among other numbers through `data-gs-stat=\"multiplier\"`; its root defaults to `data-gs-component=\"stat\"`. Performs nothing: it does not earn a multiplier, multiply a score or settle the value. Use plain `stat` when the host chooses the kind at runtime or needs its own multiplier format rather than the fixed x prefix.",
+      "categories": [
+        "Game state"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/stat"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/multiplier/multiplier.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/multiplier.tsx"
+        }
+      ],
+      "docs": "Pass `value` as the number, not as `x3`. Everything else is stat's: `delta` for a change beside it, `settlement` for a multiplier the host has yet to confirm, `label` for the word in front of it."
+    },
+    {
+      "name": "nav",
+      "type": "registry:ui",
+      "title": "Nav",
+      "description": "The places a player can go from here: a control per destination, the one they are on marked, in four treatments from one component. `bar` is the foot of the screen, `tabs` a strip with a rule under the current one, `pills` a row of rounded controls, `drawer` a vertical list. Each destination rides on `data-gs-nav`, deliberately not `data-gs-choice` and not `data-gs-item`, so a test counting the options in a question never also counts a nav bar. `data-gs-active` is where the player is, which is not `data-gs-selected`, because a destination is not a pick they may reverse. Not available at all and available later stay two attributes because they render two ways: disabled goes flat and takes no focus, locked keeps its shape, shows a padlock and stays focusable and describable. Performs nothing: it does not navigate, change a route, or decide which destination is current.",
+      "categories": [
+        "Composition"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/nav/nav.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/nav.tsx"
+        },
+        {
+          "path": "packages/ui/src/nav/nav.css",
+          "type": "registry:style",
+          "target": "components/gamestage/nav.css"
+        },
+        {
+          "path": "packages/tokens/primitives.css",
+          "type": "registry:style",
+          "target": "components/gamestage/gamestage-primitives.css"
+        }
+      ],
+      "docs": "Pass `destinations`, one entry per place, each with an `id`, a `label` and an optional `icon`, which must be inline SVG taking `currentColor` so the theme owns its colour. Mark the current one with `active`; the component never works that out, because the host owns the route. Pass `presentation` and `placement` for the treatment and the edge it hugs. Pass `onNavigate`, which is called with the destination's id and nothing else. `disabled` and `locked` are separate: use `locked` for somewhere that opens later, which keeps its shape and its place in the tab order so a player can hear it described, and `disabled` for somewhere that is not coming back on this surface. Setting both leaves the destination disabled, because a control cannot be flat and keep its shape at once."
+    },
+    {
+      "name": "onboarding",
+      "type": "registry:ui",
+      "title": "Onboarding",
+      "description": "The sequence a player is walked through before they play: an illustration, a step, the pager saying where in the sequence this is, and a way forward with a way out beside it. The step is a real `tutorial-step` and the pager is `segments` in its pager treatment, the same row of cells the round indicator and a quest's progress use, so neither is written again here and both keep their own root marker. The pager is derived from the step rather than passed, so the two cannot disagree. Position is `data-gs-step` over `data-gs-max`, the same pair progress uses. A finished sequence carries `data-gs-complete`; a skipped one carries `data-gs-dismissed` and renders nothing inside, because leaving controls in an aria-hidden subtree is a keyboard trap for the player that rule exists for. Performs nothing: it does not advance itself, remember the player has seen it, or decide the sequence is done.",
+      "categories": [
+        "Flow and guidance"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/tutorial-step",
+        "@gamestage/segments"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/onboarding/onboarding.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/onboarding.tsx"
+        },
+        {
+          "path": "packages/ui/src/onboarding/onboarding.css",
+          "type": "registry:style",
+          "target": "components/gamestage/onboarding.css"
+        },
+        {
+          "path": "packages/tokens/primitives.css",
+          "type": "registry:style",
+          "target": "components/gamestage/gamestage-primitives.css"
+        }
+      ],
+      "docs": "Pass `steps`, one entry per step with a `title`, a `body` and an optional `media` slot for the illustration or animation, and `step` for the one the sequence is on, from 1. Pass `onNext`, `onBack` and `onDismiss` to get the three controls; a sequence with none renders no controls at all, because the component never invents a way forward the host did not ask for. Pass `complete` when the host says the sequence is done and `dismissed` when the player closed it; neither is inferred from the step number. A step out of range renders nothing rather than throwing, and the attributes still carry what the host asked for. It imports `./tutorial-step` and `./segments`, which are the flat paths a `gamestage-ui add` produces, and `@gamestage/tutorial-step` and `@gamestage/segments` are what put those files there."
+    },
+    {
+      "name": "player-card",
+      "type": "registry:ui",
+      "title": "Player card",
+      "categories": [
+        "Player"
+      ],
+      "description": "One pickable player, as a card: a modifier band saying what picking them is worth, a portrait, the name, a meta line and a tail. The portrait, the name and the meta line are an `identity` and are never redrawn here, so the avatar cases and the signed-out slot behave the same on a card as they do in a leaderboard row. Four states, the four specimen 3k draws: idle, `data-gs-selected` which is reversible, `data-gs-committed` which is not, and `data-gs-state` once the host settles it. Committed drops the selected marker, so one card never claims both. A settled or locked card always renders a glyph as well as a fill, and every state is in the accessible name. Performs nothing: it does not decide whether a pick is allowed, does not settle a result and reports a press without changing itself.",
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/identity"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/player-card/player-card.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/player-card.tsx"
+        },
+        {
+          "path": "packages/ui/src/player-card/player-card.css",
+          "type": "registry:style",
+          "target": "components/gamestage/player-card.css"
+        }
+      ],
+      "docs": "Import `app/gamestage-primitives.css` at your root beside `gamestage-tokens.css`: the press gesture and the action face come from the shared rule sets in that file, which `@gamestage/tokens` already installs. Pass `player` as the adapter's player, or `null` for a slot nobody has filled. Pass `modifier` for the band, `meta` for the line under the name and `detail` for the tail; pass `meta` and `modifier` as strings where they should be announced, because a node cannot go into an accessible name. Pass `onSelect` to make the card itself the control, and leave it off where your own button does the picking, which is what the pick carousel does. Set `selected` while the pick is reversible, `committed` once it is not, and `state` when the result is known; the component never moves between them on its own. `locked` keeps the card and shows a padlock, `disabled` takes it away."
+    },
+    {
+      "name": "podium",
+      "type": "registry:ui",
+      "title": "Podium",
+      "description": "The top three as the three-block shape: second left, first centre and tallest, third right. Not a short leaderboard, because the arrangement is the point and the DOM order has to stay 1, 2, 3 for a screen reader and for a render with no stylesheet. Each place carries `data-gs-rank` and the score inside it is a `stat` carrying `data-gs-value`. Rank movement is the sign of `data-gs-delta`. Places travel over the reorder token and stop dead under reduced motion. Performs nothing: the host hands the places over already ranked.",
+      "categories": [
+        "Competition"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/identity",
+        "@gamestage/stat"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/podium/podium.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/podium.tsx"
+        },
+        {
+          "path": "packages/ui/src/podium/podium.css",
+          "type": "registry:style",
+          "target": "components/gamestage/podium.css"
+        }
+      ],
+      "docs": "Pass `places` in rank order; anything past the third is dropped. The visual arrangement comes from `order` keyed on `data-gs-rank`, so the DOM stays in rank order and the podium reads correctly with the stylesheet off. Set `you` on the player's place for the marked treatment and the word the accessible-name table fixes. An empty podium renders `data-gs-empty=\"true\"` with a designed empty case; pass `emptyAction` to give it the next step. Player names are rendered as text, never as markup. Installs into `components/gamestage/podium/` rather than flat beside the others, so that its relative import of `stat` resolves to the same file in an installed app as it does in this repo. Changing the target to a flat file breaks that import."
+    },
+    {
+      "name": "presence",
+      "type": "registry:ui",
+      "title": "Presence",
+      "categories": [
+        "Player"
+      ],
+      "description": "You are not alone: how many people are here, and which of them the host can name. The count rides `data-gs-value` and the named people are each an `identity`, so the avatar cases, the presence dot and the accessible name are decided in one place rather than again here. Names are the host's to give, with its players' consent, and a name is never inferred from a count. Not knowing the number is distinct from nobody being here: the number is left out rather than rendered as a nought, while a genuinely empty room carries `data-gs-empty=\"true\"` and a designed line. Subscribes to nothing: no socket, no polling, no counting. The host knows who is here and hands it over.",
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/identity"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/presence/presence.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/presence.tsx"
+        },
+        {
+          "path": "packages/ui/src/presence/presence.css",
+          "type": "registry:style",
+          "target": "components/gamestage/presence.css"
+        }
+      ],
+      "docs": "Pass `count` for the number of people in the room and re-render with a new one as it moves; leave it out where you only know who is here, and pass `count={0}` to say the room is empty. Pass `format` to group the thousands: `data-gs-value` keeps the raw number, so a test never parses a separator. Pass `entries` for the people you may name, each with the adapter's player and their presence, and set `you` on the player holding the device. Children render beside the count and stay announced, which is where an invite control goes; this component never opens a share sheet itself. Pass `emptyLabel` to say something about your own game to the first arrival; the accessible name keeps the contract's \"nothing here yet\" whatever the copy says."
+    },
+    {
+      "name": "prize-entry",
+      "type": "registry:ui",
+      "title": "Prize entry",
+      "description": "The draw entry form, and the state after it. REQ-051 asks for the path from login to code to entry to entered, so the confirmation is part of this component rather than a screen the host is left to invent: pass `entered` and it renders what the player is now in, carrying `data-gs-complete`. Consent is never assumed. No box starts ticked and no prop could tick one, required and optional are stated in words beside each box, and the entry control stays unavailable until every required consent is given, saying what to do rather than saying no. It enters nobody into anything: it collects the fields and the consents and hands them to the host, which runs the draw.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/form",
+        "@gamestage/field",
+        "@gamestage/button"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/prize-entry/prize-entry.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/prize-entry.tsx"
+        },
+        {
+          "path": "packages/ui/src/prize-entry/prize-entry.css",
+          "type": "registry:style",
+          "target": "components/gamestage/prize-entry.css"
+        }
+      ],
+      "docs": "Pass `prize` for what they are playing for, your own `field` components as children, and `consents` as `[{ name, label, requirement }]`. `onSubmit` gives you the fields and the ticked consents together, keyed by name, and it never fires while a required consent is missing. Set `busy` while you take the entry and pass `errors` when you reject it. When your own call comes back accepted, re-render with `entered` and an `entry` carrying the entry number and when the draw happens, plus `onDone` for the way back to the game. Find the entry control with `[data-gs-part=\"submit\"]` and the entered state with `[data-gs-complete]`."
+    },
+    {
+      "name": "profile",
+      "type": "registry:ui",
+      "title": "Profile",
+      "categories": [
+        "Player"
+      ],
+      "description": "One player's own page, in four bands: who they are, the numbers they are judged by, what they have won, and whatever else the host keeps here. The first three are an `identity`, a set of `stat`s and an `inventory`, so the avatar cases, the tabular numerals and the empty collection all behave as they do everywhere else. The profile carries no `data-gs-value` of its own: each stat answers for its own number, and a container that repeated one would leave a host asking which element it had found. An empty collection is the inventory's state and not the profile's. Loads nothing: it fetches no profile, signs nobody out and saves no setting. `player={null}` is the signed-out case and renders as one, which is what a profile tab shows before anybody signs in.",
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/identity",
+        "@gamestage/inventory",
+        "@gamestage/stat"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/profile/profile.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/profile.tsx"
+        },
+        {
+          "path": "packages/ui/src/profile/profile.css",
+          "type": "registry:style",
+          "target": "components/gamestage/profile.css"
+        }
+      ],
+      "docs": "Pass the adapter's `player`, or `null` before sign-in. Pass `stats` as the numbers in the order you want them, each one exactly what you would pass `stat`: the kind, the label and the format stay yours. Pass `rewards` for the collection and leave it out entirely where this player has no collection, which is not the same as an empty one; `rewards={[]}` is the empty case and `inventory` renders it. `actions` takes the controls beside the name, edit and settings, and `children` takes the rest of the page: recent results, settings rows, sign out. Those are yours because they are the application's, and this library builds no switch and submits no form. Read each number from its own stat's `data-gs-value`."
+    },
+    {
+      "name": "progress-bar",
+      "type": "registry:ui",
+      "title": "Progress bar",
+      "description": "How far through something a player is, as a bar. Determinate is `data-gs-value` over `data-gs-max`; indeterminate is `data-gs-indeterminate` with no value and no aria-valuenow, so a screen reader hears \"in progress\" rather than nothing; zero is a real state that renders as one rather than an empty bar that looks broken; complete is `data-gs-complete`. There is no `data-gs-progress` and no `data-gs-fill`: CSS cannot divide one attribute by another, so the fraction the fill geometry needs is the custom property `--gs-progress`, a variable and not an attribute. The fill runs over the fill motion token and stops dead under reduced motion, so completion also changes the fill's colour, the track's edge and a glyph, which are emphasis and survive. Performs nothing: the host owns the number and says when it is finished.",
+      "categories": [
+        "Progress"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/progress-bar/progress-bar.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/progress-bar.tsx"
+        },
+        {
+          "path": "packages/ui/src/progress-bar/progress-bar.css",
+          "type": "registry:style",
+          "target": "components/gamestage/progress-bar.css"
+        }
+      ],
+      "docs": "Pass `value` with `max` for a known fraction and `indeterminate` when there is none; a value passed alongside `indeterminate` is ignored rather than rendered, because a bar that is both 40% and unknowable is neither. Pass `min` when the floor is not zero, and it is omitted from the DOM when it is. Pass `complete` when the host says the thing is finished; the component never infers it from the number. Pass `format` to render the figure as something other than the bare number, and `data-gs-value` still carries the real one. `showLabel` puts the name and the figure above the track. BDS-022 makes this the base for `milestones` and `quest`, and `progressFraction` is exported so both compute the fraction the same way."
+    },
+    {
+      "name": "quest",
+      "type": "registry:ui",
+      "title": "Quest",
+      "description": "A named task with a reward on it and a way of reading how far through it the player is. A quest is measured one of two ways, and both are this component rather than two: pass `steps` for a task counted in discrete things done, which renders the shared `segments`, and pass `value` with `max` for one counted in a continuous number, which renders `progress-bar`. Never both, so one number is never shown two ways at once. There is no `data-gs-progress` and no `data-gs-fill`: how far through it is, is `data-gs-value` over `data-gs-max`, and the nested component carries the same pair because it is the same number. The reward pill rides on `data-gs-reward`, the same attribute a reward object uses. Complete shows a tick and locked shows a padlock, so neither state is a colour alone. Performs nothing: it never counts what the player did, awards the reward, or decides the quest is finished.",
+      "categories": [
+        "Progress"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/progress-bar",
+        "@gamestage/segments"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/quest/quest.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/quest.tsx"
+        },
+        {
+          "path": "packages/ui/src/quest/quest.css",
+          "type": "registry:style",
+          "target": "components/gamestage/quest.css"
+        }
+      ],
+      "docs": "Pass `title` for what the quest asks, `detail` for the line under it, and `reward` for the pill, with `rewardId` when the host has its own id for it. Then pass either `steps`, one entry per discrete thing the quest asks for, or `value` with `max`. Pass `complete` when the host says the quest is finished; the component never infers it from every step being done, because a reward the host has not settled must not look settled. Pass `locked` for a quest that opens later, which keeps its shape and shows a padlock. It imports `./progress-bar` and `./segments`, which are the flat paths a `gamestage-ui add` produces, and `@gamestage/progress-bar` and `@gamestage/segments` are what put those files there."
+    },
+    {
+      "name": "reward",
+      "type": "registry:ui",
+      "title": "Reward",
+      "description": "One thing a player can be given: a prize, a badge, a pack, a ticket. Four lifecycle states on `data-gs-reward-state`, locked, available, earned and claimed, each changing the surface, the glyph and the text at once rather than the colour alone. The lifecycle is deliberately not `data-gs-state`, which is set once after settlement and never revisited; a reward is host-driven and comes back. An earned reward that has not been opened pulses, and because the pulse is motion and stops dead under reduced motion, waiting is also a glyph, a fill, and the word \"waiting\" in the accessible name. Revealing is a player act, so a revealable reward is a real button that works from the keyboard. Performs nothing: it does not decide a reward was earned, fetch it or claim it.",
+      "categories": [
+        "Rewards"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/glyphs",
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/reward/reward.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/reward.tsx"
+        },
+        {
+          "path": "packages/ui/src/reward/reward.css",
+          "type": "registry:style",
+          "target": "components/gamestage/reward.css"
+        }
+      ],
+      "docs": "Pass `state` for where the reward is in its lifecycle; the host owns it and changes it, the component never does. Pass `revealed` once the reveal has played: an earned reward without it is waiting, and it says so. Pass `onReveal` to let the player open it, which makes the root a real button, focusable and operable with Enter and Space; leave it off and the reward is an object to look at. `value` renders beside the name and rides `data-gs-value` machine-readably. A locked reward carries `data-gs-reward-state=\"locked\"` and never `data-gs-locked`, which stays a control attribute. Installs into components/gamestage/reward/ rather than a flat file, because `inventory` imports it by a path that has to resolve the same here and in your app."
+    },
+    {
+      "name": "round",
+      "type": "registry:ui",
+      "title": "Round",
+      "description": "\"Round 2 of 5\": a number and a ceiling, and almost nothing else. A thin wrapper over stat, which already knows that a value with a max reads as a fraction on screen and as \"2 of 5\" to a screen reader. It performs nothing and decides nothing; it exists so a host writes the round rather than remembering which stat kind a round is, and so a test can find the round on a surface that also carries a score and a timer. Draws as a row of segment pips — done, the one the player is on, and coming — beside the words, which is what the design draws. Without a max there is no sequence to draw and the pips give way to the bare number, because an endless mode is a real case.",
+      "categories": [
+        "Game state"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/stat"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/round/round.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/round.tsx"
+        }
+      ],
+      "docs": "Pass `value` for the round the player is on, 1-based like every other position in the contract, and `max` for how many there are when that is known in advance. Leave `max` off for an endless ladder; the round is still a number. Pass `label` to call it something else, a question or a leg or a heat, and the accessible name follows. `data-gs-value` and `data-gs-max` carry the two numbers separately, so nothing has to parse \"2/5\"."
+    },
+    {
+      "name": "score",
+      "type": "registry:ui",
+      "title": "Score",
+      "description": "The score a player reads, as a thin wrapper over `stat`: every number, typeface, tabular numeral and state word is stat's, and score adds one thing, the count from the old number to the new one. `data-gs-value` carries the settled number from the moment the host gives it and `data-gs-counting` says only that the text on screen has not caught up, so an interrupted count, a suppressed one and a finished one all report the same truth. Reduced motion has no count-up at all: the number is correct at once. The accessible name holds the settled number throughout, never the one the animation is passing through. It fixes `kind=\"score\"` so the host does not have to remember the kind, and its root carries `data-gs-component=\"score\"` so a test can find it beside the timer and round. The count is presentation: it does not award points, fetch a score or settle the number. Use plain `stat` when the host chooses the kind at runtime or wants a score rendered without the count-up or a separate score root. Draws as the ringed chip the design draws, rather than as a label above a bare number; pass presentation to change the silhouette.",
+      "categories": [
+        "Game state"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/stat"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/score/score.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/score.tsx"
+        },
+        {
+          "path": "packages/ui/src/score/score.css",
+          "type": "registry:style",
+          "target": "components/gamestage/score.css"
+        }
+      ],
+      "docs": "Pass `value` and re-render with a new one; the change counts up. Pass `countUp={false}` when the score is being restored rather than earned, and it lands at once. The count's duration is the `--gs-motion-fill` token, which is 0ms under reduced motion, so reduced motion needs nothing from the host. Read `data-gs-value` for the number and never the rendered text: mid-count they differ, which is the point."
+    },
+    {
+      "name": "segments",
+      "type": "registry:ui",
+      "title": "Segments",
+      "description": "A bounded run drawn as a row of cells rather than one continuous fill. The design draws this object three separate times with three treatments, and it is the same object each time: the round indicator, the segmented progress under a quest, and the story pager. One component renders all three, and `data-gs-presentation` says which, the way `choice` and `selector` already work. Every state is readable without colour: a complete segment is filled and carries a tick, a wrong one is striped and carries a cross, an active one is wider and ringed, an empty one is hollow. There is no `data-gs-progress` and no `data-gs-fill`: how far through the run is, is `data-gs-value` over `data-gs-max`, where the value is the number of segments behind the player. Performs nothing: the host passes the states in and the component never decides a segment is won.",
+      "categories": [
+        "Progress"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/segments/segments.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/segments.tsx"
+        },
+        {
+          "path": "packages/ui/src/segments/segments.css",
+          "type": "registry:style",
+          "target": "components/gamestage/segments.css"
+        }
+      ],
+      "docs": "Pass `segments` as one entry per cell, in order, each with a `state` of `complete`, `wrong`, `active` or `empty`. Render every cell, including the ones still to go: \"two to go\" is a thing the player reads. Pass `presentation` to pick the treatment: `bar` for the segmented progress bar and the round indicator, `dots` for circles, `pager` for the story pager where the current cell widens into a pill. Pass `showSummary` for the count beside the run, as the quest card shows it. `segmentsBehind` is exported so `quest` and `milestones` count the same way; a wrong segment counts as behind, because the round was played and is over, and the per-segment `data-gs-state` is what tells a lost round from a won one."
+    },
+    {
+      "name": "selector",
+      "type": "registry:ui",
+      "title": "Selector",
+      "description": "One value out of a set, rendered as a segmented control, a dropdown or a stepper from the same component and the same state machine. How it is worked is a second, separate prop: tap it, hold it to charge, or swipe it, where each direction is bound to the option it commits. Reports what the player selected and committed; never decides whether it was right. Pass the settled outcome back as `result` and it renders correct, wrong or rewarded with a fill, a glyph and a text change, so the answer survives colour blindness, mute and reduced motion. Use it for a difficulty setting or a predicted goal total, where the player picks one value from the set the host supplies. It does not fetch the options, persist the selection or settle the outcome. Use `choice` for a question with presented answers, and `button` for an action such as starting the round or continuing after the result.",
+      "categories": [
+        "Controls"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/glyphs",
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/selector/selector.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/selector.tsx"
+        },
+        {
+          "path": "packages/ui/src/selector/selector.css",
+          "type": "registry:style",
+          "target": "components/gamestage/selector.css"
+        }
+      ],
+      "docs": "Use presentation=\"segmented\" for two to four options a player compares at a glance, \"dropdown\" for a long list, and \"stepper\" for an ordered scale. Set interaction=\"hold\" for a hold-to-charge commit and \"swipe\" for a swipe card; both always commit, because a charge that has filled and a gesture that has landed are deliberate acts. Set commitOnSelect for a fast tap round; leave it off when the player should be able to change their mind. Space held charges a hold and Enter commits it outright, so a player who cannot hold a key can still play."
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "The prediction slider. It snaps to a configurable interval, five by default, so a prediction of 47 and a prediction of 48 are the same prediction and no host has to bucket them afterwards. Moving it is not answering with it: a moved thumb is `data-gs-selected`, picked and reversible, and a separate commit control makes it `data-gs-committed`. The track is inset and the thumb is raised, which is the one rule that tells a player where to type from where to press. Keyboard-operable by the increment, with Home and End, and `data-gs-value` carrying the machine-readable number alongside whatever is rendered. Performs nothing: it does not score the prediction, settle it or send it anywhere.",
+      "categories": [
+        "Controls"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/glyphs",
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/slider/slider.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/slider.tsx"
+        },
+        {
+          "path": "packages/ui/src/slider/slider.css",
+          "type": "registry:style",
+          "target": "components/gamestage/slider.css"
+        }
+      ],
+      "docs": "Pass `label` to name the thing being predicted; a slider with no name is unusable with a screen reader. Pass `increment` to change the snap interval, which is five per BDS-014. `commits` defaults to `\"separate\"`, which renders the commit control and is what a prediction wants; `\"immediate\"` is for the rare surface where the drag itself is the answer, a volume rather than a prediction. Take the answer from `onCommitted`, never from `onValueChange`: the second one fires for every number the player passes through on the way. Pass `value` to own the number yourself, or `defaultValue` to let the slider hold it; either way it is snapped before it is rendered."
+    },
+    {
+      "name": "sponsor",
+      "type": "registry:ui",
+      "title": "Sponsor",
+      "categories": [
+        "Application surfaces"
+      ],
+      "description": "A presentation slot the host fills, and obviously not the game. BDS-043: the sponsor's brand is the sponsor's, so the logo is a node the host passes and the library applies no token to it. Nothing here tints, crops, re-colours or animates it, and no theme reaches inside the slot. It carries `data-gs-component=\"sponsor\"` and nothing else in the namespace, which is the contract: no `data-gs-selected`, `data-gs-committed`, `data-gs-state`, `data-gs-disabled`, `data-gs-locked` or `data-gs-animates`, because a slot carrying any of those would be styled as part of the game. The five lockups, inline, hud, reward, interstitial and badge, are classes and sizes rather than attributes for the same reason. The label is required and is what keeps the slot honest: a logo with no \"Presented by\" above it is an advert nobody was told about. It is not a link, because the library's perform-nothing boundary forbids building a link target from a prop; a host that wants a clickable sponsor wraps this in its own anchor.",
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/sponsor/sponsor.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/sponsor.tsx"
+        },
+        {
+          "path": "packages/ui/src/sponsor/sponsor.css",
+          "type": "registry:style",
+          "target": "components/gamestage/sponsor.css"
+        }
+      ],
+      "docs": "Pass `label` as the relationship in words, `name` as the sponsor's name, and `logo` as the sponsor's own asset. The asset arrives on screen exactly as you gave it: the component sets its height box and nothing else, so any plate, padding or background the brand guidelines require travels with the asset rather than being invented here. Pick `slot` for where it sits: `inline` for a presented-by line, `hud` beside a timer or score chip, `reward` inside a prize card, `interstitial` between rounds, `badge` for the smallest mark. Show one sponsor per screen, the interstitial excepted. Leave `logo` out when you have no asset and the name renders as the credit. Wrap it in your own anchor if it has to be clickable."
+    },
+    {
+      "name": "stage",
+      "type": "registry:ui",
+      "title": "Stage",
+      "description": "Gamestage UI arranged around a scene the host owns. The scene is a Three.js canvas, a Unity build, a video, a static image or somebody else's embed, and stage never renders it, never reaches into it, never measures it and never assumes it exists: it takes the node and puts it on the page untouched. Three decisions carry the component. The scene sits in normal flow and every other layer is absolute over it, so the scene gives the stage its box and the stage sets no width, no height and no aspect-ratio of its own. Layers pinned to an edge are as big as their contents while `behind`, `overlay` and `celebration` cover the stage, which is what makes the pointer rule expressible: `data-gs-pointer` is `none` on every covering layer, so a press falls through to the scene, and `auto` on the edge layers, which can only swallow a press inside themselves. And `data-gs-safe-area` holds the layers clear of a phone's notch and home bar by default, so a host that has already padded for the insets can say so rather than paying them twice.",
+      "categories": [
+        "Composition"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/stage/stage.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/stage.tsx"
+        },
+        {
+          "path": "packages/ui/src/stage/stage.css",
+          "type": "registry:style",
+          "target": "components/gamestage/stage.css"
+        }
+      ],
+      "docs": "Pass the scene as `scene` and the library's own layers as `Stage.Layer` children: `<Stage scene={<canvas/>}><Stage.Layer layer=\"hud\" placement=\"top\"><Hud …/></Stage.Layer></Stage>`. `layer` is the closed set `scene`, `behind`, `hud`, `overlay`, `nav`, `celebration` and decides the stacking order, which belongs to the library. `placement` pins an edge layer; a layer with no placement covers the stage. `pointer` overrules the default when the host knows better, which is the case a modal overlay needs: pass `pointer=\"auto\"` on an overlay meant to block the scene. Omitting `scene` is supported and renders no scene layer at all, because a quiz with nothing behind it uses the same components as a Unity build; the host's container then gives the stage its height. Pass `safeArea={false}` only when the host has already padded for the device's insets. Stage depends on tokens alone: bds.md's dependency table lists it against `hud`, which is what the reference screen composes rather than what the component imports, and a stage that imported a HUD could not be the thing a host puts its own components into."
+    },
+    {
+      "name": "stat",
+      "type": "registry:ui",
+      "title": "Stat",
+      "description": "Every number a player reads: score, timer, lives, streak, rank, multiplier, level and XP, from one component with a different kind. Tabular numerals so a changing digit does not shift the row, an optional label, an optional change beside it, and `data-gs-value` carrying the machine-readable number alongside whatever is rendered, so a test reads 90 while a player reads 1:30. Critical changes the fill, a glyph and the weight at once, never colour alone. Performs nothing: it does not count down, fetch or decide when a value is critical. It does not award points or settle a value; the host supplies the number and any settlement state. Use it directly when the host chooses the kind at runtime, needs a rank, level or XP number, or already owns a clock and only needs its seconds displayed. Use `score`, `multiplier`, `timer`, `round`, `lives` or `streak` when the number has that fixed meaning, so the host does not have to remember its kind. The wrappers let a test identify the number among others: score, timer, round, lives and streak have their own `data-gs-component`, while multiplier defaults to `stat` and is identified by `data-gs-stat=\"multiplier\"`. Reach for `timer` when the component must run the clock; setting `kind=\"timer\"` on stat never starts one. Since the presentation prop it also owns the silhouette: plain, chip, pill, dots or pips. The design draws six game-state objects as six shapes and the library drew all six as a label above a number on the page background, so a player reading a HUD could not tell the timer from the score except by the word. The prop changes the shape and nothing else — same number, same accessible name, same states, same attributes — which is why it is a prop rather than five components. dots and pips additionally draw a row of marks from the same value and max the number already carries, so nothing is a second place the number is written down.",
+      "categories": [
+        "Game state"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/stat/stat.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/stat.tsx"
+        },
+        {
+          "path": "packages/ui/src/stat/stat.css",
+          "type": "registry:style",
+          "target": "components/gamestage/stat.css"
+        }
+      ],
+      "docs": "Pass `kind` to say which number this is; it picks the word and the token scale and nothing else. Pass `format` to render a value as something other than the bare number, and `data-gs-value` still carries the real one. Pass `settlement=\"optimistic\"` for a local render the host has yet to confirm, and `\"corrected\"` when the host disagrees with what the player already saw. `score`, `timer`, `lives` and `streak` are this component, not four components."
+    },
+    {
+      "name": "story",
+      "type": "registry:ui",
+      "title": "Story",
+      "description": "The vertical format: a sequence of frames a player moves through, with the game's own state laid over the top. It is a `media-frame` and a `hud` plus a pager, two step controls, a caption plate, a way out and one thing to do from here. It owns no more of the media than the frame does: it never plays, never advances on its own and never counts elapsed time. The host owns `step` and the story tells it which way the player asked to go, so an out-of-range step is clamped rather than thrown and a story with no frames still renders the frame's empty state at full size rather than collapsing. Every control carries a name and the pager is a readout rather than a row of extra tab stops, with each cell naming itself complete, current or to go, so the position is readable without colour and without shape. The pager is a deliberate placeholder for the shared segmented track, GSUI-115's `segments` with `presentation=\"pager\"`; folding it in is GSUI-126.",
+      "categories": [
+        "Media"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/media-frame",
+        "@gamestage/hud"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/story/story.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/story.tsx"
+        },
+        {
+          "path": "packages/ui/src/story/story.css",
+          "type": "registry:style",
+          "target": "components/gamestage/story.css"
+        },
+        {
+          "path": "packages/tokens/primitives.css",
+          "type": "registry:style",
+          "target": "components/gamestage/gamestage-primitives.css"
+        }
+      ],
+      "docs": "Pass `frames`, one entry per frame, each with a `label` saying what belongs in it, an optional `detail` for the caption plate and an optional `media` node, which is yours and is rendered untouched. Pass `step`, 1-based, and `onStep`, which is called with the step the player asked for: the story renders the step you give it and never moves on its own, so advancing, auto-advancing and deciding a frame is finished are all yours. Pass `hud` and the game state lays over the media as a `hud`, which owns every number in it; read the score through `[data-gs-component=\"hud\"] [data-gs-stat=\"score\"]` rather than the first `[data-gs-value]` on the page. Pass `onSkip` for a way out, which renders no Skip control at all when you omit it, and `action` for the one thing to do from here. `busy` and `playing` are per frame and go straight through to the media frame, which never infers either. Nothing in this library makes the media play. Creating the element, starting it, advancing it and reporting where it got to are your application's job."
+    },
+    {
+      "name": "streak",
+      "type": "registry:ui",
+      "title": "Streak",
+      "description": "How many in a row, drawn as a flame beside the number. A thin wrapper over stat: the number, the label, the change beside it and the announcement are stat's, and streak adds only the flame. A broken streak is `value={0}`, a real state that reads as \"streak, 0\", rather than an attribute of its own. A live flame is solid and a broken one is hollow with a wisp curling off it, so outline, fill and stroke count all differ and the break survives colour blindness, a muted tab and reduced motion. Carries no max, because a streak has no ceiling. Performs nothing: it does not count or decide when a streak breaks. Draws as a pill, which is what the design draws.",
+      "categories": [
+        "Game state"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/stat"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/streak/streak.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/streak.tsx"
+        },
+        {
+          "path": "packages/ui/src/streak/streak.css",
+          "type": "registry:style",
+          "target": "components/gamestage/streak.css"
+        }
+      ],
+      "docs": "Pass `value` as the count in a row and `delta={1}` on the render after it grows. Zero is how a break is expressed, so set `value={0}` rather than looking for a broken flag. Pass `critical` when the host decides the run is about to go; stat renders its own glyph inside the group and the flame on the root is untouched. The flame is `aria-hidden`, because stat already announces \"streak, 7\" and announcing it again would read the number twice."
+    },
+    {
+      "name": "theme-arcade",
+      "type": "registry:style",
+      "title": "Arcade theme",
+      "description": "The arcade look: gradient surfaces, a heavy dark outline on every control, circular player identity, and an uppercase Bungee display face. Install it, then set data-gs-theme=\"arcade\" on the root. It brings its own typeface, which is the part a theme cannot do on its own.",
+      "categories": [
+        "Foundations"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/fonts-arcade"
+      ],
+      "files": [
+        {
+          "path": "packages/tokens/dist/theme-arcade.css",
+          "type": "registry:style",
+          "target": "app/gamestage-theme-arcade.css"
+        }
+      ],
+      "docs": "Import gamestage-theme-arcade.css after gamestage-tokens.css, and set data-gs-theme=\"arcade\" on <html> or on any subtree. The theme is a cascade layer rather than a specificity trick, so it wins over the light and dark context whatever the selectors look like. Everything it does not name it inherits from the base tokens. Axes it changes: colour, shape.identity, stroke.control, the action type and the display typeface."
+    },
+    {
+      "name": "theme-paper",
+      "type": "registry:style",
+      "title": "Paper theme",
+      "description": "A quiet printed look for editorial and broadcast furniture: near-white surfaces, square corners, hairline rules, an IBM Plex Sans and Instrument Serif pairing, and a press that squeezes and shifts colour instead of dropping 6px. Install it, then set data-gs-theme=\"paper\" on the root.",
+      "categories": [
+        "Foundations"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/fonts-paper"
+      ],
+      "files": [
+        {
+          "path": "packages/tokens/dist/theme-paper.css",
+          "type": "registry:style",
+          "target": "app/gamestage-theme-paper.css"
+        }
+      ],
+      "docs": "Import gamestage-theme-paper.css after gamestage-tokens.css, and set data-gs-theme=\"paper\" on <html> or on any subtree. Paper is the theme that shows the layer is more than a palette: it differs from base and from arcade on typeface, press gesture, edge treatment and radius, so a greyscale screenshot of the three still shows three products. Its press gesture is scale(0.97) with a colour shift; under prefers-reduced-motion the build replaces the gesture with none and the colour shift carries the whole response."
+    },
+    {
+      "name": "theme-stadium",
+      "type": "registry:style",
+      "title": "Stadium theme",
+      "description": "A floodlit broadcast look for live sport: flat colour on deep navy, gold for interactive controls and teal for the selected state. Install it, then set data-gs-theme=\"stadium\" on the root.",
+      "categories": [
+        "Foundations"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/fonts"
+      ],
+      "files": [
+        {
+          "path": "packages/tokens/dist/theme-stadium.css",
+          "type": "registry:style",
+          "target": "app/gamestage-theme-stadium.css"
+        }
+      ],
+      "docs": "Import gamestage-theme-stadium.css after gamestage-tokens.css, and set data-gs-theme=\"stadium\" on <html> or on any subtree. Stadium changes colour and nothing else, and keeps the base DM Sans and Unbounded pairing, which is why it depends on @gamestage/fonts rather than on a font item of its own. Compare it with @gamestage/theme-paper, which changes typeface, press gesture, edge treatment and radius as well."
+    },
+    {
+      "name": "timer",
+      "type": "registry:ui",
+      "title": "Timer",
+      "description": "A countdown that owns its own clock. It is a thin wrapper over stat, so the number, the tabular numerals and the accessible name are stat's; what it adds is the one thing stat refuses to do, which is perform. It holds the interval, reads the wall clock rather than counting ticks so a throttled tab catches up instead of losing seconds, keeps its place across a pause, clears itself on unmount, and calls the host back exactly once when time is up. `data-gs-value` is always seconds and never a formatted string, so a test reads 90 while a player reads 1:30. Critical is host-declared through a threshold in seconds, and it lands as a glyph, a text treatment and a changed accessible name, never as colour alone. It fixes `kind=\"timer\"` so the host does not have to remember the kind, and `data-gs-component=\"timer\"` identifies its root beside the score and round. It does not end the round or synchronise with a server. At expiry it stops its clock, marks itself complete and calls `onExpire` if supplied; the host decides what happens to play. Use plain `stat` with `kind=\"timer\"` when the host already owns the clock and supplies the seconds, including time received from a server, so the display does not start a second clock. Draws as a filled pill whose fill changes at each threshold the host declares: running, warningAt, criticalAt. Three drawings rather than one drawing in three colours — a solid fill, an outline, then a solid fill in another hue with a glyph beside it — so a player who cannot tell the three apart by colour still sees three shapes.",
+      "categories": [
+        "Game state"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/stat"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/timer/timer.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/timer.tsx"
+        }
+      ],
+      "docs": "Pass `duration` in seconds and the component runs it; changing `duration` restarts the clock. Pass `direction=\"up\"` to count elapsed rather than remaining, and note that either way the timer ends at the same moment, which is why `data-gs-direction` exists: one sample of `data-gs-value=\"90\"` cannot say whether that is ninety elapsed or ninety remaining. Pass `criticalAt` to say how many seconds from the end counts as running out; leave it off and the timer is never critical, because the component does not guess where that line is. Pass `paused` to stop without finishing, which loses no time. Pass `onExpire` for the one call when time runs out. Pass `format` to render the seconds as something other than `m:ss`; `data-gs-value` still carries the seconds. An expired timer is `data-gs-complete=\"true\"` with the value at the end of its range, and it is no longer critical, because time is not running out once it has run out. The group is not a live region, so the countdown is silent and a screen reader user reads the current time on demand rather than being read every second."
+    },
+    {
+      "name": "tip",
+      "type": "registry:ui",
+      "title": "Tip",
+      "description": "The quiet line of help that sits in the layout rather than over it. A coach mark interrupts, pulses and is the step a sequence is on; a tip is a sentence a player can read or ignore, and it is the right component whenever the guidance is not worth a bubble. It never holds focus, dismissal is a state rather than an unmount so `data-gs-dismissed=\"true\"` is assertable, and it binds no Escape handler because a page full of tips would make Escape mean several things at once. Floats only when given `data-gs-placement`, and placement is CSS driven by the attribute rather than a positioning library.",
+      "categories": [
+        "Flow and guidance"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/tip/tip.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/tip.tsx"
+        },
+        {
+          "path": "packages/ui/src/tip/tip.css",
+          "type": "registry:style",
+          "target": "components/gamestage/tip.css"
+        }
+      ],
+      "docs": "Render it where the guidance belongs and pass nothing: inline is the normal case, and the absent `placement` is what keeps it in the flow. Pass `placement` only when the host wants it to float, in which case it positions against the nearest positioned ancestor. Pass `anchor` when the tip is about one control. Pass `dismissed` and `onDismiss` as a controlled pair; without `onDismiss` there is no close control and the tip cannot be closed. Reach for `coach-mark` instead when the guidance has to interrupt, point, or carry a step."
+    },
+    {
+      "name": "tokens",
+      "type": "registry:base",
+      "title": "Gamestage tokens",
+      "description": "The design tokens every Gamestage component reads: colour, type, depth, motion, sound and haptic intent, plus the arcade theme. Install this first. Components read these variables and never define a colour themselves, so a theme change reaches every surface. It also ships the shared rule sets a component includes so a theme axis reaches it without the component re-declaring every property by hand. Renders nothing, creates no DOM and sets no root attribute. It supplies CSS variables, and sound and haptic intent as JSON; it does not play a sound or fire a haptic, and it is the host that sets the theme and context attributes on its own DOM. It pulls in `fonts` as a registry dependency, whose stylesheet is imported before this one.",
+      "categories": [
+        "Foundations"
+      ],
+      "registryDependencies": [
+        "@gamestage/fonts"
+      ],
+      "files": [
+        {
+          "path": "packages/tokens/dist/tokens.css",
+          "type": "registry:style",
+          "target": "app/gamestage-tokens.css"
+        },
+        {
+          "path": "packages/tokens/dist/cues.json",
+          "type": "registry:file",
+          "target": "lib/gamestage-cues.json"
+        },
+        {
+          "path": "packages/tokens/primitives.css",
+          "type": "registry:style",
+          "target": "app/gamestage-primitives.css"
+        }
+      ],
+      "cssVars": {},
+      "docs": "Import gamestage-tokens.css once at the root. Set data-gs-theme=\"arcade\" for the arcade look and data-gs-context=\"light\" for a light surface."
+    },
+    {
+      "name": "tutorial-step",
+      "type": "registry:ui",
+      "title": "Tutorial step",
+      "description": "One step of a sequence, with the way forward attached. \"Step 2 of 5\" rides `data-gs-step` and `data-gs-max`, the same attribute progress uses, because \"step 2 of 5\" and \"2 of 5 segments filled\" are the same idea. `data-gs-active` is where the sequence has got to, which is not `data-gs-selected`: the player did not pick it and cannot unpick it. A finished sequence carries `data-gs-complete` and shows a tick, so completion is never a colour alone. Locked keeps its shape and its way forward shows a padlock. Its controls are `button`, in document order, and it neither takes focus nor holds it. Performs nothing: it does not advance itself or decide when a sequence is done.",
+      "categories": [
+        "Flow and guidance"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/button"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/tutorial-step/tutorial-step.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/tutorial-step.tsx"
+        },
+        {
+          "path": "packages/ui/src/tutorial-step/tutorial-step.css",
+          "type": "registry:style",
+          "target": "components/gamestage/tutorial-step.css"
+        }
+      ],
+      "docs": "Pass `step` and `max` for the position, and render every step of the sequence rather than only the current one: `active` says which the sequence is on, `complete` says which are behind it. Pass `onNext` and `onBack` to get the controls; a step with neither renders no actions. Pass `locked` for a step that opens later, which keeps its shape and puts a padlock on the way forward while leaving it focusable. It imports `./button`, which is the flat path a `gamestage-ui add` produces, and `@gamestage/button` is what puts the file there."
+    },
+    {
+      "name": "versus",
+      "type": "registry:ui",
+      "title": "Versus",
+      "categories": [
+        "Competition"
+      ],
+      "description": "Two sides, head to head: each side's player or team, each side's score as a `stat`, and a bar splitting the two by share. A side that is a player is an `identity` and a side that is a team is a name, because a team has no avatar case and no presence: every side carries `data-gs-side`, then `data-gs-player` or `data-gs-team` depending on what it stands for, and the player's side never also carries `data-gs-you`. The outcome is `data-gs-outcome` with a mark beside the score and the past-tense word in the accessible name, so who won never rests on the colour. The share is a custom property rather than an attribute, the same decision `progress-bar` made: there is no `data-gs-progress` and no `data-gs-fill`. Performs nothing: the host owns both numbers and decides who won.",
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/identity",
+        "@gamestage/stat"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/versus/versus.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/versus.tsx"
+        },
+        {
+          "path": "packages/ui/src/versus/versus.css",
+          "type": "registry:style",
+          "target": "components/gamestage/versus.css"
+        }
+      ],
+      "docs": "Pass `player` and `opponent`, each with a score and either a `player` from the adapter or a `team` id with a `label`. Two sides and never three: a board of many is `leaderboard`. Set `outcome` on each side once you know how it finished; the component never decides it, and the two sides are independent, so a forfeit can be a loss without the other side being a win. Pass `split={false}` where the two numbers are not a whole that can be divided, a lap time against a lap time for instance: the bar would otherwise read as a share of something that does not exist. Two zero scores render as half each rather than dividing by nought, and a negative score is clamped to the track. Read `data-gs-value` on each side's stat for the numbers, never the rendered text."
+    }
+  ]
+}

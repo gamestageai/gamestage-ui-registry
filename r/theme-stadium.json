@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-stadium",
+  "title": "Stadium theme",
+  "description": "A floodlit broadcast look for live sport: flat colour on deep navy, gold for interactive controls and teal for the selected state. Install it, then set data-gs-theme=\"stadium\" on the root.",
+  "registryDependencies": [
+    "@gamestage/tokens",
+    "@gamestage/fonts"
+  ],
+  "files": [
+    {
+      "path": "packages/tokens/dist/theme-stadium.css",
+      "content": "/* Generated from themes/stadium.json. Do not edit; run pnpm tokens:build.\n   The stadium theme on its own, for a consumer installing @gamestage/theme-stadium.\n   Needs gamestage-tokens.css for the values it does not override, and its own\n   font item for the families it names. */\n\n@layer gs.base, gs.context, gs.theme;\n\n@layer gs.theme {\n  [data-gs-theme=\"stadium\"] {\n  --gs-depth-style: glow;\n  --gs-press-transform: none;\n  --gs-color-background: oklch(0.15 0.035 240);\n  --gs-color-surface: oklch(0.20 0.04 238);\n  --gs-color-surface-raised: oklch(0.26 0.045 236);\n  --gs-color-edge: oklch(0.34 0.05 235);\n  --gs-color-edge-high: oklch(0.68 0.09 95);\n  --gs-color-ink: #ffffff;\n  --gs-color-ink-secondary: oklch(0.83 0.02 235);\n  --gs-color-muted: oklch(0.60 0.025 235);\n  --gs-color-interactive: oklch(0.76 0.14 85);\n  --gs-color-interactive-hover: oklch(0.82 0.14 85);\n  --gs-color-interactive-base: oklch(0.52 0.12 80);\n  --gs-color-selected: oklch(0.78 0.13 200);\n  --gs-color-positive: oklch(0.74 0.17 145);\n  --gs-color-positive-base: oklch(0.50 0.14 145);\n  --gs-color-negative: oklch(0.66 0.20 25);\n  --gs-color-negative-base: oklch(0.44 0.17 25);\n  --gs-color-warning: oklch(0.80 0.15 65);\n  --gs-color-reward: oklch(0.88 0.14 95);\n  --gs-color-reward-base: oklch(0.64 0.13 90);\n  --gs-color-player: oklch(0.72 0.15 230);\n  --gs-color-opponent: oklch(0.70 0.19 340);\n  --gs-color-disabled: oklch(0.36 0.03 236);\n  --gs-color-disabled-ink: oklch(0.58 0.02 235);\n  --gs-color-on-accent: oklch(0.16 0.03 240);\n  --gs-color-on-bright: oklch(0.16 0.03 240);\n  --gs-color-scrim: rgba(6,10,24,0.6);\n  --gs-depth-styles-offset-pressable: inset 0 1px 0 rgba(255,255,255,.3), 0 var(--gs-press-travel) 0 var(--gs-color-interactive-base);\n  --gs-depth-styles-squeeze-pressable: 0 0 0 var(--gs-stroke-control) var(--gs-color-edge);\n  --gs-depth-styles-squeeze-pressed: 0 0 0 var(--gs-stroke-selected) var(--gs-color-interactive);\n  --gs-depth-styles-glow-pressable: 0 0 0 var(--gs-stroke-control) var(--gs-color-edge-high);\n  --gs-depth-styles-glow-pressed: 0 0 0 var(--gs-stroke-selected) var(--gs-color-interactive);\n  --gs-depth-raised: inset 0 1px 0 var(--gs-color-edge-high), 0 4px 12px rgba(0,0,0,.5);\n  --gs-depth-pressable: inset 0 1px 0 rgba(255,255,255,.3), 0 var(--gs-press-travel) 0 var(--gs-color-interactive-base);\n  --gs-depth-reward: 0 0 0 3px var(--gs-color-background), 0 0 0 5px var(--gs-color-reward), 0 0 28px oklch(0.87 0.17 92 / .45);\n  }\n}\n",
+      "type": "registry:style",
+      "target": "app/gamestage-theme-stadium.css"
+    }
+  ],
+  "docs": "Import gamestage-theme-stadium.css after gamestage-tokens.css, and set data-gs-theme=\"stadium\" on <html> or on any subtree. Stadium changes colour and nothing else, and keeps the base DM Sans and Unbounded pairing, which is why it depends on @gamestage/fonts rather than on a font item of its own. Compare it with @gamestage/theme-paper, which changes typeface, press gesture, edge treatment and radius as well.",
+  "categories": [
+    "Foundations"
+  ],
+  "type": "registry:style"
+}
