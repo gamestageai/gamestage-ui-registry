@@ -27,7 +27,7 @@
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
-      "description": "The action a player takes that is not a choice: start, continue, play again, claim, share. Primary and secondary, default and large. Pressable controls move rather than fade, so the offset base collapses and the face lands where the base was. Disabled goes flat because it is never coming back; locked keeps its shape and shows a padlock because it is available later, and a player can tell those apart at a glance. Reads tokens only, so a theme change reaches it. Reports the press to the host; it does not start a round, claim a reward or share a result itself, and it does not fetch or settle anything. Use `choice` when the player is answering a question from presented options, and `selector` when they are picking one value from a set, such as a difficulty or a predicted goal total.",
+      "description": "The action a player takes that is not a choice: start, continue, play again, claim, share. Five treatments, which with the large size are the six the design draws: primary, secondary, tertiary for a dismissal that must not weigh as much as the thing it declines, destructive for an action that warns rather than invites, and icon for a square control holding one glyph and no words. Pressable controls move rather than fade, so the offset base collapses and the face lands where the base was. Disabled goes flat because it is never coming back; locked keeps its shape and shows a padlock because it is available later, and a player can tell those apart at a glance. Reads tokens only, so a theme change reaches it. Reports the press to the host; it does not start a round, claim a reward or share a result itself, and it does not fetch or settle anything. Use `choice` when the player is answering a question from presented options, and `selector` when they are picking one value from a set, such as a difficulty or a predicted goal total.",
       "categories": [
         "Controls"
       ],
@@ -50,7 +50,7 @@
           "target": "components/gamestage/button.css"
         }
       ],
-      "docs": "Use variant=\"primary\" for the one action on the surface and \"secondary\" for everything beside it. Use size=\"large\" for the hero action a player is meant to reach for. Pass `locked` when the action opens later and `disabled` when it never will. Locked refuses the click, including the one Enter and Space synthesise, but stays focusable so a screen reader can still describe it; disabled uses the native attribute and leaves the tab order."
+      "docs": "Use variant=\"primary\" for the one action on the surface, \"secondary\" for everything beside it, \"tertiary\" for a dismissal such as \"Not now\" or \"Play as guest\", and \"destructive\" for an action that warns, such as \"Quit game\". Use variant=\"icon\" for a pause, mute or help control: its children are the glyph and it requires a `label`, because a glyph is a drawing and a drawing is not a name; the label lands in the accessible name as content rather than as aria-label, so the word \"locked\" still composes with it. Use size=\"large\" for the hero action a player is meant to reach for. Pass `locked` when the action opens later and `disabled` when it never will. Locked refuses the click, including the one Enter and Space synthesise, but stays focusable so a screen reader can still describe it; disabled uses the native attribute and leaves the tab order."
     },
     {
       "name": "choice",
@@ -240,7 +240,8 @@
       ],
       "registryDependencies": [
         "@gamestage/tokens",
-        "@gamestage/button"
+        "@gamestage/button",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -274,7 +275,8 @@
       ],
       "registryDependencies": [
         "@gamestage/tokens",
-        "@gamestage/button"
+        "@gamestage/button",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -307,7 +309,8 @@
         "react"
       ],
       "registryDependencies": [
-        "@gamestage/tokens"
+        "@gamestage/tokens",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -335,7 +338,8 @@
         "react"
       ],
       "registryDependencies": [
-        "@gamestage/tokens"
+        "@gamestage/tokens",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -537,7 +541,7 @@
       "name": "identity",
       "type": "registry:ui",
       "title": "Identity",
-      "description": "One player, rendered: an avatar, a name, and whatever the host puts beside them. The three avatar cases are on `data-gs-avatar` as `image`, `fallback` and `none`, so a test asserts which one landed without hunting for an `<img>`, and a failed image falls back to initials rather than leaving a hole. Signed out is a first-class state: pass `player={null}` and it renders the designed case, carrying `data-gs-anonymous`. Presence and `you` change the accessible name as well as the pixels. It renders identity and never performs authentication: no network call, no cookie, no token, no identity provider.",
+      "description": "One player, rendered: an avatar, a name, and whatever the host puts beside them. The three avatar cases are on `data-gs-avatar` as `image`, `fallback` and `none`, so a test asserts which one landed without hunting for an `<img>`, and a player with no picture, or whose picture fails, gets a symbol and a hue hashed from their id, never a face or an initial. Signed out is a first-class state: pass `player={null}` and it renders the designed case, carrying `data-gs-anonymous`. Presence and `you` change the accessible name as well as the pixels. It renders identity and never performs authentication: no network call, no cookie, no token, no identity provider.",
       "categories": [
         "Player"
       ],
@@ -545,6 +549,7 @@
         "react"
       ],
       "registryDependencies": [
+        "@gamestage/glyphs",
         "@gamestage/tokens"
       ],
       "files": [
@@ -559,7 +564,7 @@
           "target": "components/gamestage/identity.css"
         }
       ],
-      "docs": "Pass the adapter's `player`, or `null` before sign-in; both are supported renderings and the null one is what every identity surface shows first. `data-gs-anonymous` is your word that there is no player, never a check this component made and never a security boundary: hiding content behind it is client-side access control, which this library does not do. Pass `you` for the row belonging to the player holding the device, `presence` when you know whether they are here, and `avatar={false}` for a dense row that wants the name alone. Children render beside the name and stay announced, so a stat, a badge or a control can sit in the row. The avatar's shape comes from `--gs-shape-identity`, which the arcade theme sets to `circle`."
+      "docs": "Pass the adapter's `player`, or `null` before sign-in; both are supported renderings and the null one is what every identity surface shows first. `data-gs-anonymous` is your word that there is no player, never a check this component made and never a security boundary: hiding content behind it is client-side access control, which this library does not do. Pass `you` for the row belonging to the player holding the device, `presence` when you know whether they are here, and `avatar={false}` for a dense row that wants the name alone. Children render beside the name and stay announced, so a stat, a badge or a control can sit in the row. The avatar's shape comes from `--gs-shape-identity`, which the arcade theme sets to `circle`. Pass presentation=\"row\" for the boxed player or opponent row specimen 3a draws, with `side` naming which; `you` implies the player's side."
     },
     {
       "name": "inventory",
@@ -631,7 +636,8 @@
         "react"
       ],
       "registryDependencies": [
-        "@gamestage/tokens"
+        "@gamestage/tokens",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -742,7 +748,8 @@
       ],
       "registryDependencies": [
         "@gamestage/tokens",
-        "@gamestage/progress-bar"
+        "@gamestage/progress-bar",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -793,7 +800,8 @@
         "react"
       ],
       "registryDependencies": [
-        "@gamestage/tokens"
+        "@gamestage/tokens",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -861,7 +869,8 @@
         "react"
       ],
       "registryDependencies": [
-        "@gamestage/identity"
+        "@gamestage/identity",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -949,7 +958,8 @@
         "@gamestage/tokens",
         "@gamestage/form",
         "@gamestage/field",
-        "@gamestage/button"
+        "@gamestage/button",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -1007,7 +1017,8 @@
         "react"
       ],
       "registryDependencies": [
-        "@gamestage/tokens"
+        "@gamestage/tokens",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -1037,7 +1048,8 @@
       "registryDependencies": [
         "@gamestage/tokens",
         "@gamestage/progress-bar",
-        "@gamestage/segments"
+        "@gamestage/segments",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -1145,7 +1157,8 @@
         "react"
       ],
       "registryDependencies": [
-        "@gamestage/tokens"
+        "@gamestage/tokens",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -1505,10 +1518,15 @@
           "path": "packages/tokens/primitives.css",
           "type": "registry:style",
           "target": "app/gamestage-primitives.css"
+        },
+        {
+          "path": "packages/tokens/motion.css",
+          "type": "registry:style",
+          "target": "app/gamestage-motion.css"
         }
       ],
       "cssVars": {},
-      "docs": "Import gamestage-tokens.css once at the root. Set data-gs-theme=\"arcade\" for the arcade look and data-gs-context=\"light\" for a light surface."
+      "docs": "Import gamestage-tokens.css, gamestage-primitives.css and gamestage-motion.css once at the root, in that order. Set data-gs-theme=\"arcade\" for the arcade look and data-gs-context=\"light\" for a light surface. motion.css carries the design's eleven keyframes and applies one to any element carrying data-gs-motion; without it a score that should pop and a wrong answer that should shake simply appear."
     },
     {
       "name": "tutorial-step",
@@ -1523,7 +1541,8 @@
       ],
       "registryDependencies": [
         "@gamestage/tokens",
-        "@gamestage/button"
+        "@gamestage/button",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
