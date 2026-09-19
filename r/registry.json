@@ -65,6 +65,7 @@
       ],
       "registryDependencies": [
         "@gamestage/adapter",
+        "@gamestage/feel",
         "@gamestage/glyphs",
         "@gamestage/tokens"
       ],
@@ -142,8 +143,8 @@
     {
       "name": "cues",
       "type": "registry:base",
-      "title": "Gamestage cues",
-      "description": "The game-feel runtime: juice level from none to maximum, sound and haptic playback behind an adapter, and the host's own mute honoured alongside a best-effort OS silent-switch signal. It plays nothing itself; the token file says what a cue means and this hands the allowed ones to the host. No asset files yet (GSUI-38 attaches them), so today playing a cue means recording that it fired, in order.",
+      "title": "Gamestage cue runtime",
+      "description": "The performing half of the cue layer, and the half a host opts into: the GameFeelProvider, the catalogue's tiers and intents, the juice ladder from none to maximum, sound and haptic playback behind an adapter, and the host's own mute honoured alongside a best-effort OS silent-switch signal. It plays nothing itself; the token file says what a cue means and this hands the allowed ones to the host. Components install @gamestage/feel, the seam, and never this: a component reports and the host performs. No asset files yet (GSUI-38 attaches them), so today playing a cue means recording that it fired, in order.",
       "categories": [
         "Foundations"
       ],
@@ -151,47 +152,43 @@
         "react"
       ],
       "registryDependencies": [
+        "@gamestage/feel",
         "@gamestage/tokens"
       ],
       "files": [
         {
-          "path": "packages/ui/src/runtime/feel/feel.tsx",
+          "path": "packages/ui/src/runtime/feel/cues.tsx",
           "type": "registry:lib",
-          "target": "lib/gamestage-feel/feel.tsx"
+          "target": "components/gamestage/cues.tsx"
         },
         {
           "path": "packages/ui/src/runtime/feel/cue-catalogue.ts",
           "type": "registry:lib",
-          "target": "lib/gamestage-feel/cue-catalogue.ts"
+          "target": "components/gamestage/cue-catalogue.ts"
         },
         {
           "path": "packages/ui/src/runtime/feel/juice.ts",
           "type": "registry:lib",
-          "target": "lib/gamestage-feel/juice.ts"
+          "target": "components/gamestage/juice.ts"
         },
         {
           "path": "packages/ui/src/runtime/feel/haptics.ts",
           "type": "registry:lib",
-          "target": "lib/gamestage-feel/haptics.ts"
+          "target": "components/gamestage/haptics.ts"
         },
         {
           "path": "packages/ui/src/runtime/feel/os-mute.ts",
           "type": "registry:lib",
-          "target": "lib/gamestage-feel/os-mute.ts"
+          "target": "components/gamestage/os-mute.ts"
         },
         {
           "path": "packages/ui/src/runtime/feel/sound-adapter.ts",
           "type": "registry:lib",
-          "target": "lib/gamestage-feel/sound-adapter.ts"
-        },
-        {
-          "path": "packages/ui/src/runtime/feel/index.ts",
-          "type": "registry:lib",
-          "target": "lib/gamestage-feel/index.ts"
+          "target": "components/gamestage/sound-adapter.ts"
         }
       ],
       "cssVars": {},
-      "docs": "Wrap the part of the tree that plays a game in <GameFeelProvider>, then call useGameFeel().cue(name, kind) wherever a state change happens: a settled correct fires cue('correct', 'sfx'), a light tap fires cue('light', 'haptic'). Pass `muted` from the host's own mute switch; the provider ORs it with a best-effort OS silent-switch signal, so either can silence sound and neither can force it back on. Pass `juice` ('none' | 'reduced' | 'standard' | 'maximum') to scale celebration: essential cues, the confirmation of what the player just did, are never gated by juice, only by mute. `hapticsOff` gates navigator.vibrate independently of sound. No sound or haptic actually plays yet: GSUI-38 attaches real assets to the same cue names."
+      "docs": "Wrap the part of the tree that plays a game in <GameFeelProvider>, imported from the installed cues.tsx. Pass `muted` from the host's own mute switch; the provider ORs it with a best-effort OS silent-switch signal, so either can silence sound and neither can force it back on. Pass `juice` ('none' | 'reduced' | 'standard' | 'maximum') to scale celebration: essential cues, the confirmation of what the player just did, are never gated by juice, only by mute. `hapticsOff` gates navigator.vibrate independently of sound. Components ask for cues through useGameFeel().cue from @gamestage/feel, which installs with them and is a no-op until this provider is above it. The same cue asked for twice in one turn is one cue (REQ-040), because one settlement reaches two components and neither can see the other. No sound or haptic actually plays yet: GSUI-38 attaches real assets to the same cue names."
     },
     {
       "name": "discovery",
@@ -301,7 +298,7 @@
       "name": "feedback",
       "type": "registry:ui",
       "title": "Feedback",
-      "description": "The response to the player's last act: correct, wrong, score or reward. A wrong answer shakes, a score increment floats up and fades, and the message itself changes colour, glyph and text so it survives reduced motion, mute and colour blindness alike. Renders synchronously with its props, because the gap between a tap and this element appearing is the library's 100ms budget. Performs nothing: it does not decide whether the last act was right, does not know the running score, and does not settle a reward.",
+      "description": "The response to the player's last act: correct, wrong, score or reward. One component, four variants, from specimen 5d of the design. Correct is a word on a positive plate with a tick, tilted and popping in; wrong the same plate on the surface with a dashed negative ring and a cross, shaking; score the bare +100 floating up beside the stat it changed, no plate; reward a surface card on the reward ring with a star and an Earned kicker, slamming in and staying until tapped. The glyph and the words change colour and text as well as moving, so the answer survives reduced motion, mute and colour blindness alike. Renders synchronously with its props, because the gap between a tap and this element appearing is the library's 100ms budget. Performs nothing: it does not decide whether the last act was right, does not know the running score, and does not settle a reward.",
       "categories": [
         "Game feel"
       ],
@@ -309,6 +306,7 @@
         "react"
       ],
       "registryDependencies": [
+        "@gamestage/feel",
         "@gamestage/tokens",
         "@gamestage/glyphs"
       ],
@@ -324,7 +322,29 @@
           "target": "components/gamestage/feedback.css"
         }
       ],
-      "docs": "Pass `variant` to say which of the four contract outcomes this is. Pass `message` for the host's own copy (the reason an answer was wrong, a reward's name); leave it out and a default word for the variant renders instead. Pass `delta` on a `score` variant for the signed amount that floats up, e.g. 50 or -10. Mount it fresh per settlement (a changing `key` works well) rather than toggling it, since the shake and the float are entrance animations that play once, on mount."
+      "docs": "Pass `variant` to say which of the four contract outcomes this is. Pass `label` for the word on the plate (a reward's name); leave it out and a default per variant renders. Pass `message` for the line under it (why an answer was wrong). Pass `delta` for the signed amount a value moved: on `score` it is the whole message, on `correct` it follows the word. Pass `onDismiss` to turn the lifetime on: correct and wrong hold 1200ms and fade, score fades after its float, reward stays until tapped; it is called once the fade has ended. Render one at a time: a new variant or message replaces the plate and plays its entrance again. Place it in the stage's overlay layer, centred, 300px from the top of a phone; score sits beside the stat it changed."
+    },
+    {
+      "name": "feel",
+      "type": "registry:base",
+      "title": "Gamestage cue seam",
+      "description": "What a component needs in order to ask for a cue, and nothing else: a React context, the useGameFeel hook, and the names a cue can have. A component reports and the host performs, so this is the reporting half. With no provider above it the hook is a no-op, which is the state every component is built for, and a host that wants a cue to become a sound installs @gamestage/cues on top. Separate from that runtime because a component that installs the provider, the catalogue, the juice ladder, haptics, the silent-switch watcher and the sound adapter has installed 6.4KB of code it never executes; this is 0.8KB.",
+      "categories": [
+        "Foundations"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "packages/ui/src/runtime/feel/feel.tsx",
+          "type": "registry:lib",
+          "target": "components/gamestage/feel.tsx"
+        }
+      ],
+      "cssVars": {},
+      "docs": "Call useGameFeel().cue(name, kind) wherever a state change happens: a settled correct fires cue('correct', 'sfx'), a light tap fires cue('light', 'haptic'). Nothing plays until a host wraps the tree in <GameFeelProvider> from @gamestage/cues; until then every call is a no-op and the component behaves exactly as it does now. The cue names are the sfx and haptic groups of the token file, typed as a union, so an unknown name is a compile error rather than a silent nothing."
     },
     {
       "name": "field",
@@ -359,12 +379,12 @@
       "name": "fonts-arcade",
       "type": "registry:font",
       "title": "Gamestage fonts, arcade",
-      "description": "Bungee for the numbers and actions a player tracks, DM Sans for interface text, linked from Google Fonts. The arcade theme names Bungee as its display family; this item is what puts it on the page. Installed for you by @gamestage/theme-arcade.",
+      "description": "Unbounded for the numbers and actions a player tracks, DM Sans for interface text, linked from Google Fonts. The arcade theme names Unbounded as its display family; this item is what puts it on the page. Installed for you by @gamestage/theme-arcade.",
       "categories": [
         "Foundations"
       ],
       "font": {
-        "family": "Bungee",
+        "family": "Unbounded",
         "provider": "google",
         "import": "",
         "variable": "--gs-type-font-family-display",
@@ -719,7 +739,8 @@
         "react"
       ],
       "registryDependencies": [
-        "@gamestage/tokens"
+        "@gamestage/tokens",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -764,6 +785,36 @@
         }
       ],
       "docs": "Pass `value`, `max` and optionally `min` for the track, and `milestones` for what sits on it. A milestone's position comes from its `at`, in the same units as the value, not from its place in the array. Pass `complete`, `active` or `locked` per milestone: the component never works out that a milestone is reached from the value passing it, because the host owns that decision and a reward the host has not settled must not look settled. Pass `children` on a milestone for what rides inside the marker, such as a multiplier. It imports `./progress-bar`, which is the flat path a `gamestage-ui add` produces, and `@gamestage/progress-bar` is what puts the file there."
+    },
+    {
+      "name": "modal",
+      "type": "registry:ui",
+      "title": "Modal",
+      "description": "The confirmation of something that cannot be undone: quit, sign out, delete, leave a live round. Never for information and never for a reward; those are a toast, a sheet or feedback. It always carries exactly two actions, a destructive one first on the negative colour carrying `data-gs-destructive`, and a safe one raised under it, and it refuses to render without the destructive one, which its unit test holds it to. Centred in its container over a heavier scrim than the sheet's. A tap on the scrim does nothing and Escape is the safe action, so nobody quits by reaching for the scene behind the question. Focus lands on the safe action, is held inside while open, and goes back to what had it. `data-gs-tone` is `warning` for leaving something behind and `negative` for destroying something; the glyph disc takes the colour. Performs nothing: it does not quit, sign out or delete anything.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/button",
+        "@gamestage/sheet",
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/modal/modal.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/modal.tsx"
+        },
+        {
+          "path": "packages/ui/src/modal/modal.css",
+          "type": "registry:style",
+          "target": "components/gamestage/modal.css"
+        }
+      ],
+      "docs": "Put `position: relative` on the surface the modal belongs to and render it inside. Pass `open`, a `title` that is the question (\"Quit this game?\"), `destructiveAction` and `safeAction`, each a label and a handler. The host owns `open` and closes the modal from either handler; the modal closes nothing itself. Pass `tone=\"negative\"` when the action destroys something rather than leaves it. Put what it costs in `children`, one sentence. Do not reach for it to tell the player something: that is a toast. Do not reach for it to show a reward: that is a sheet. It depends on `sheet` for the focus trap the two share."
     },
     {
       "name": "multiplier",
@@ -1187,6 +1238,7 @@
       ],
       "registryDependencies": [
         "@gamestage/glyphs",
+        "@gamestage/sheet",
         "@gamestage/tokens"
       ],
       "files": [
@@ -1202,6 +1254,40 @@
         }
       ],
       "docs": "Use presentation=\"segmented\" for two to four options a player compares at a glance, \"dropdown\" for a long list, and \"stepper\" for an ordered scale. Set interaction=\"hold\" for a hold-to-charge commit and \"swipe\" for a swipe card; both always commit, because a charge that has filled and a gesture that has landed are deliberate acts. Set commitOnSelect for a fast tap round; leave it off when the player should be able to change their mind. Space held charges a hold and Enter commits it outright, so a player who cannot hold a key can still play."
+    },
+    {
+      "name": "sheet",
+      "type": "registry:ui",
+      "title": "Sheet",
+      "description": "A surface that rises from the bottom of its container for one short job and then goes: reward detail, the options of a select on touch, share, filters, more. A scrim over the scene, a panel anchored to the foot of the container with a grab handle, a header row of art, kicker, title and a line of body, whatever the host puts in the middle, then a primary action and a ghost under it. It is modal while open: focus is held inside the panel, Escape closes it, a tap on the scrim closes it, and focus goes back to what had it. Capped at sixty percent of its container, because anything taller is a page. Unmounted rather than hidden when closed; whether the player dismissed it is the host's state. Performs nothing: what the actions do is the host's, and it holds no state of its own beyond where focus was.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/button",
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/sheet/sheet.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/sheet.tsx"
+        },
+        {
+          "path": "packages/ui/src/sheet/sheet.css",
+          "type": "registry:style",
+          "target": "components/gamestage/sheet.css"
+        },
+        {
+          "path": "packages/ui/src/sheet/trap.ts",
+          "type": "registry:ui",
+          "target": "components/gamestage/trap.ts"
+        }
+      ],
+      "docs": "Put `position: relative` on the surface the sheet belongs to and render the sheet inside it; it covers that surface and anchors to its foot. Pass `open` and `onDismiss` as a controlled pair: the host owns whether it is open, and `onDismiss` is called on the scrim, on Escape and on the ghost action. `label` is the dialog's accessible name and is required. Give it `title`, `kicker`, `media` and `description` for a header row, `primaryAction` and `secondaryAction` for the two controls under the content, or none of them and put a list of options in `children`. The primary action does not close the sheet; what it does is the host's, and the host closes the sheet when it is done. Open one at a time: each holds focus."
     },
     {
       "name": "slider",
@@ -1264,7 +1350,7 @@
       "name": "stage",
       "type": "registry:ui",
       "title": "Stage",
-      "description": "Gamestage UI arranged around a scene the host owns. The scene is a Three.js canvas, a Unity build, a video, a static image or somebody else's embed, and stage never renders it, never reaches into it, never measures it and never assumes it exists: it takes the node and puts it on the page untouched. Three decisions carry the component. The scene sits in normal flow and every other layer is absolute over it, so the scene gives the stage its box and the stage sets no width, no height and no aspect-ratio of its own. Layers pinned to an edge are as big as their contents while `behind`, `overlay` and `celebration` cover the stage, which is what makes the pointer rule expressible: `data-gs-pointer` is `none` on every covering layer, so a press falls through to the scene, and `auto` on the edge layers, which can only swallow a press inside themselves. And `data-gs-safe-area` holds the layers clear of a phone's notch and home bar by default, so a host that has already padded for the insets can say so rather than paying them twice.",
+      "description": "Gamestage UI arranged around a scene the host owns. The scene is a Three.js canvas, a Unity build, a video, a static image or somebody else's embed, and stage never renders it, never reaches into it, never measures it and never assumes it exists: it takes the node and puts it on the page untouched. Three decisions carry the component. The scene sits in normal flow and every other layer is absolute over it, so the scene gives the stage its box and the stage sets no width, no height and no aspect-ratio of its own. Seven layers, bottom to top: scene, behind, hud, interaction, overlay, nav, celebration. Layers pinned to an edge are as big as their contents while `behind`, `overlay` and `celebration` cover the stage, which is what makes the pointer rule expressible: `data-gs-pointer-events` is `none` on every covering layer, so a press falls through to the scene, and `auto` on the edge layers, which can only swallow a press inside themselves. And `data-gs-safe-area` holds the layers clear of a phone's notch and home bar by default, so a host that has already padded for the insets can say so rather than paying them twice.",
       "categories": [
         "Composition"
       ],
@@ -1286,7 +1372,7 @@
           "target": "components/gamestage/stage.css"
         }
       ],
-      "docs": "Pass the scene as `scene` and the library's own layers as `Stage.Layer` children: `<Stage scene={<canvas/>}><Stage.Layer layer=\"hud\" placement=\"top\"><Hud …/></Stage.Layer></Stage>`. `layer` is the closed set `scene`, `behind`, `hud`, `overlay`, `nav`, `celebration` and decides the stacking order, which belongs to the library. `placement` pins an edge layer; a layer with no placement covers the stage. `pointer` overrules the default when the host knows better, which is the case a modal overlay needs: pass `pointer=\"auto\"` on an overlay meant to block the scene. Omitting `scene` is supported and renders no scene layer at all, because a quiz with nothing behind it uses the same components as a Unity build; the host's container then gives the stage its height. Pass `safeArea={false}` only when the host has already padded for the device's insets. Stage depends on tokens alone: bds.md's dependency table lists it against `hud`, which is what the reference screen composes rather than what the component imports, and a stage that imported a HUD could not be the thing a host puts its own components into."
+      "docs": "Pass the scene as `scene` and the library's own layers as `Stage.Layer` children: `<Stage scene={<canvas/>}><Stage.Layer layer=\"hud\" placement=\"top\"><Hud …/></Stage.Layer></Stage>`. `layer` is the closed set `scene`, `behind`, `hud`, `interaction`, `overlay`, `nav`, `celebration`, bottom to top, and decides the stacking order and where the layer sits, which belong to the library. `interaction` is the choice grid, slider or form the player answers with: it sits directly above the nav shell (declare the shell's height as `--gs-stage-nav-height` on the stage), 10px in from each side, no taller than 40% of the stage, and takes presses. `nav` placed `bottom` spans the glass and pays the home indicator's inset inside itself. `placement` pins an edge layer; a layer with no placement covers the stage. `pointer` overrules the default when the host knows better, which is the case a modal overlay needs: pass `pointer=\"auto\"` on an overlay meant to block the scene. Omitting `scene` is supported and renders no scene layer at all, because a quiz with nothing behind it uses the same components as a Unity build; the host's container then gives the stage its height. Pass `safeArea={false}` only when the host has already padded for the device's insets. Stage depends on tokens alone: bds.md's dependency table lists it against `hud`, which is what the reference screen composes rather than what the component imports, and a stage that imported a HUD could not be the thing a host puts its own components into."
     },
     {
       "name": "stat",
@@ -1362,6 +1448,7 @@
         "react"
       ],
       "registryDependencies": [
+        "@gamestage/feel",
         "@gamestage/stat"
       ],
       "files": [
@@ -1453,6 +1540,7 @@
         "react"
       ],
       "registryDependencies": [
+        "@gamestage/feel",
         "@gamestage/stat"
       ],
       "files": [
@@ -1491,6 +1579,34 @@
         }
       ],
       "docs": "Render it where the guidance belongs and pass nothing: inline is the normal case, and the absent `placement` is what keeps it in the flow. Pass `placement` only when the host wants it to float, in which case it positions against the nearest positioned ancestor. Pass `anchor` when the tip is about one control. Pass `dismissed` and `onDismiss` as a controlled pair; without `onDismiss` there is no close control and the tip cannot be closed. Reach for `coach-mark` instead when the guidance has to interrupt, point, or carry a step."
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "description": "A short message from the application, not from the game: reconnecting, saved, copied. A pill at the top of its container at the floating depth, three seconds, one at a time. A game outcome never uses it; that is `feedback`, which knows how to celebrate and how to be wrong. A toast knows neither and is deliberately quiet: a polite status region a screen reader mentions without interrupting, no focus, no trap, nothing to press. It renders the one message it is given and reports when its time is up; a host with a queue shows the head of it and advances on `onDismiss`. Never fetches, never decides what to say and never remembers what it said.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/toast/toast.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/toast.tsx"
+        },
+        {
+          "path": "packages/ui/src/toast/toast.css",
+          "type": "registry:style",
+          "target": "components/gamestage/toast.css"
+        }
+      ],
+      "docs": "Put `position: relative` on the surface the toast belongs to and render it inside; it sits centred at the top. Pass `open` and `onDismiss` as a controlled pair: after `duration` milliseconds (three seconds unless told otherwise; `Infinity` waits for the host) it calls `onDismiss`, and the host closes it. Put the words in `children` and, for a saved or copied, a mark from `glyphs` in `glyph`. Show one at a time. Never put a game outcome in it: a correct answer, a score, a reward are `feedback`."
     },
     {
       "name": "tokens",

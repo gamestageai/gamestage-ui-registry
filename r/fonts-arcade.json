@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "fonts-arcade",
   "title": "Gamestage fonts, arcade",
-  "description": "Bungee for the numbers and actions a player tracks, DM Sans for interface text, linked from Google Fonts. The arcade theme names Bungee as its display family; this item is what puts it on the page. Installed for you by @gamestage/theme-arcade.",
+  "description": "Unbounded for the numbers and actions a player tracks, DM Sans for interface text, linked from Google Fonts. The arcade theme names Unbounded as its display family; this item is what puts it on the page. Installed for you by @gamestage/theme-arcade.",
   "files": [
     {
       "path": "packages/tokens/fonts-arcade.css",
@@ -17,7 +17,7 @@
   ],
   "type": "registry:font",
   "font": {
-    "family": "Bungee",
+    "family": "Unbounded",
     "provider": "google",
     "import": "",
     "variable": "--gs-type-font-family-display",
