@@ -79,6 +79,35 @@
       "docs": "Use variant=\"primary\" for the one action on the surface, \"secondary\" for everything beside it, \"tertiary\" for a dismissal such as \"Not now\" or \"Play as guest\", and \"destructive\" for an action that warns, such as \"Quit game\". Use variant=\"icon\" for a pause, mute or help control: its children are the glyph and it requires a `label`, because a glyph is a drawing and a drawing is not a name; the label lands in the accessible name as content rather than as aria-label, so the word \"locked\" still composes with it. Use size=\"large\" for the hero action a player is meant to reach for. Pass `locked` when the action opens later and `disabled` when it never will. Locked refuses the click, including the one Enter and Space synthesise, but stays focusable so a screen reader can still describe it; disabled uses the native attribute and leaves the tab order."
     },
     {
+      "name": "chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "description": "Bars, lines, areas and rings, drawn in SVG by hand, with no charting library: grouped and stacked bars, lines with dots, curves or steps, gradient areas that can stack, radial progress, concentric rings and a stacked ring. Every colour is a token a series names by tone, so a chart follows a game's Studio palette. Every chart is also a visually hidden table, and the plot is one focusable group the arrow keys walk, announcing the point in focus and showing it in a tooltip, so nothing is hover-only. It moves once on mount (bars grow, lines draw, areas rise, rings sweep) on the fill motion token, and not at all under reduced motion. Numbers are tabular. `ChartCard` is the card shadcn puts a chart in: a heading, one line, the chart, a footer. Performs nothing: the host supplies the numbers and the words. GSUI-287.",
+      "categories": [
+        "Game state"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/strings"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/chart/chart.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/chart.tsx"
+        },
+        {
+          "path": "packages/ui/src/chart/chart.css",
+          "type": "registry:style",
+          "target": "components/gamestage/chart.css"
+        }
+      ],
+      "docs": "`<Chart type=\"line\" label=\"Your points by round\" data={rows} x=\"round\" series={[{ key: 'you', label: 'You', tone: 'player' }]} />`. `type` is `bar`, `line`, `area` or `radial`. `data` is one row per x category; for `radial` the first row holds each ring's value and `max` is what a full ring means. `stacked` stacks bars, areas, or series sharing one ring. `curve` is `linear`, `smooth` or `step`; `dots` marks every point; `format` renders a number (e.g. `n => `${n}%``); `legend` defaults on for more than one series; `height` sets the plot height, and the width fills the container, so it works from 360px. `label` is the accessible name and the table's caption, so say what the chart shows. Tones: interactive, reward, positive, player, opponent, warning, negative, muted; the default order is player, reward, positive, opponent, warning, which stay distinct in every theme. Words for the table and the announcement come from the `chart.*` strings."
+    },
+    {
       "name": "chat-stream",
       "type": "registry:ui",
       "title": "Chat stream",
@@ -235,6 +264,37 @@
         }
       ],
       "docs": "Controlled: `value` and `onValueChange` are yours, and so is clearing the field once a message lands. `onSubmit` fires on the control and on Enter, and never for whitespace alone. Pass `maxLength` to get a counter; without one there is no limit and nothing is drawn. `busy` is the message being screened and `retryIn` is the seconds left on the room's rate limit, and the composer counts what you give it rather than counting down itself, so a host with a limit re-renders with a smaller number each second. Both keep the row the same height as the idle field, so nothing under the player's thumb moves. `replyTo` draws the quote inside the composer and grows it by one row, which is the one push the mobile game frame allows because the player asked for it; pass `onCancelReply` or it cannot be dropped. The composer does not know the room is paused by the host: that is `chat-stream`, which draws the line saying so."
+    },
+    {
+      "name": "consent",
+      "type": "registry:ui",
+      "title": "Consent",
+      "description": "Asks a fan before anything records them. A panel with Reject all and Accept all at the same size and weight, and Choose, which lists the categories as toggles; `expanded` opens straight onto the list for a Privacy settings link. The categories are the Monterosa SDK's: `necessary` is always on and never offered, and `analytics`, `marketing` and `functional` are. Headless of storage: it takes the fan's current choices as `value` and hands every category back as a plain yes or no through `onDecide`. It carries `data-gs-component=\"consent\"` with `accept` and `reject` parts, which is what `gamestage verify` and `deploy` look for.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/button",
+        "@gamestage/toggle",
+        "@gamestage/strings"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/consent/consent.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/consent.tsx"
+        },
+        {
+          "path": "packages/ui/src/consent/consent.css",
+          "type": "registry:style",
+          "target": "components/gamestage/consent.css"
+        }
+      ],
+      "docs": "On Gamestage, start the game with `consentBanner: false` so the client does not draw its own banner, then render `<Consent value={game.consent.record()?.categories} onDecide={(c) => game.consent.decide(c)} />` while `game.consent.needed()` is true and `game.consent.hostDecides()` is false. For a Privacy settings link, render it with `expanded`. Take the words from Studio (`consent_title`, `consent_accept_label` and the rest) and pass them as `strings`."
     },
     {
       "name": "cues",
@@ -1478,6 +1538,41 @@
       "docs": "Pass the whole fixed set as `emotes`, in the order you want them read, and the same set every time: the row's claim is that it adds its height once, and a set that grows breaks it. Only emotes with a count, or the reader's own, draw a pill; the rest live in the picker, and a message nobody has reacted to renders nothing at all. An emote with no word to draw, such as a heart, passes a `mark` node and keeps its `label` for anybody reading it out. The counts are yours: `onReact` fires for adding and for taking back, and the component changes no number by itself. `picking` opens the picker and is yours too, because the long press that opens it lands on the message and the message is a different component; the picker does not close itself on a pick, so `onPick` both records the emote and clears `picking`."
     },
     {
+      "name": "recovery-code",
+      "type": "registry:ui",
+      "title": "Recovery code",
+      "description": "A player's way back to their progress on another device, in two presentations. `show` displays a code the host has just issued, once and large, with Copy, a Share that appears only where a share sheet exists, and the two warnings a player needs: keep it private, and a new code stops this one working. `enter` is the field a returning player types it into: a word keyboard, any case, spaces or hyphens, nothing autofilled or corrected, and the code handed to the host normalised. It issues, stores and checks nothing: the host calls its own API and passes a refusal back as `invalid` with its own sentence. Not `code-entry`, which is one digit per box on a numeric keypad.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/button",
+        "@gamestage/strings"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/recovery-code/recovery-code.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/recovery-code.tsx"
+        },
+        {
+          "path": "packages/ui/src/recovery-code/recovery-code.css",
+          "type": "registry:style",
+          "target": "components/gamestage/recovery-code.css"
+        },
+        {
+          "path": "packages/tokens/primitives.css",
+          "type": "registry:style",
+          "target": "components/gamestage/gamestage-primitives.css"
+        }
+      ],
+      "docs": "Issue the code in your own API and pass it as `code` with `presentation=\"show\"`; show it once. For a returning player, render `presentation=\"enter\"` and restore from `onSubmit`, which receives the code normalised (`normaliseRecoveryCode`). Set `busy` while your call is in flight, and `invalid` with `reason` when it refuses. On Gamestage: `game.client.issueRecoveryCode()`, `game.client.restoreFromRecoveryCode(code)` and `game.client.getRecoveryStatus()`. Pass `onCopy` or `onShare` to replace the browser clipboard or share sheet."
+    },
+    {
       "name": "reward",
       "type": "registry:ui",
       "title": "Reward",
@@ -1857,12 +1952,17 @@
           "target": "components/gamestage/story.tsx"
         },
         {
+          "path": "packages/ui/src/story/story-gestures.ts",
+          "type": "registry:lib",
+          "target": "components/gamestage/story-gestures.ts"
+        },
+        {
           "path": "packages/ui/src/story/story.css",
           "type": "registry:style",
           "target": "components/gamestage/story.css"
         }
       ],
-      "docs": "Pass `frames`, one entry per frame, each with a `label` saying what belongs in it, an optional `detail` for the caption plate and an optional `media` node, which is yours and is rendered untouched. Pass `step`, 1-based, and `onStep`, which is called with the step the player asked for: the story renders the step you give it and never moves on its own, so advancing, auto-advancing and deciding a frame is finished are all yours. Pass `hud` and the game state lays over the media as a `hud`, which owns every number in it; read the score through `[data-gs-component=\"hud\"] [data-gs-stat=\"score\"]` rather than the first `[data-gs-value]` on the page. Pass `onSkip` for a way out, which renders no Skip control at all when you omit it, and `action` for the one thing to do from here. `busy` and `playing` are per frame and go straight through to the media frame, which never infers either. Nothing in this library makes the media play. Creating the element, starting it, advancing it and reporting where it got to are your application's job."
+      "docs": "Pass `frames`, one entry per frame, each with a `label` saying what belongs in it, an optional `detail` for the caption plate and an optional `media` node, which is yours and is rendered untouched. Pass `step`, 1-based, and `onStep`, which is called with the step the player asked for: the story renders the step you give it and never moves on its own, so advancing, auto-advancing and deciding a frame is finished are all yours. Pass `hud` and the game state lays over the media as a `hud`, which owns every number in it; read the score through `[data-gs-component=\"hud\"] [data-gs-stat=\"score\"]` rather than the first `[data-gs-value]` on the page. Pass `onSkip` for a way out, which renders no Skip control at all when you omit it, and `action` for the one thing to do from here. `busy` and `playing` are per frame and go straight through to the media frame, which never infers either. Nothing in this library makes the media play. Creating the element, starting it, advancing it and reporting where it got to are your application's job. Pass `gestures` to work it the way a phone's stories work: tap the right of the frame for the next frame and the left third for the one before, swipe across to do the same, and swipe down to put it away. The story follows the finger, shrinks a little and rounds its corners, then closes through `onSkip` past a third of its height or on a fast flick, and springs back otherwise. `onHold` says a finger is down so you can pause your own timer, and `onDismissProgress` says how far it has gone so you can fade what is behind it. It is off by default, so a host with gestures of its own is not answered twice."
     },
     {
       "name": "streak",
