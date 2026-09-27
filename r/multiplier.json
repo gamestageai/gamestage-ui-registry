@@ -7,12 +7,13 @@
     "react"
   ],
   "registryDependencies": [
-    "@gamestage/stat"
+    "@gamestage/stat",
+    "@gamestage/strings"
   ],
   "files": [
     {
       "path": "packages/ui/src/multiplier/multiplier.tsx",
-      "content": "'use client'\n\nimport { Stat, type StatProps } from './stat'\n\n/**\n * Multiplier: `stat` with `kind=\"multiplier\"`, rendered as `x3` rather than `3`.\n *\n * That is the whole of it. The typeface, the tabular numerals, the label, the\n * change beside the number and `data-gs-value` are all stat's and all\n * unchanged, so a host reads `3` while a player reads `x3`.\n *\n * No stylesheet: it adds no styling, and stat already sizes a multiplier.\n */\n\nexport type MultiplierProps = Omit<StatProps, 'kind' | 'format'>\n\nexport function Multiplier(props: MultiplierProps) {\n  return <Stat {...props} component=\"multiplier\" kind=\"multiplier\" format={(value) => `x${value}`} />\n}\n",
+      "content": "'use client'\n\nimport { useStrings } from './strings'\n\nimport { Stat, type StatProps } from './stat'\n\n/**\n * Multiplier: `stat` with `kind=\"multiplier\"`, rendered as `x3` rather than `3`.\n *\n * That is the whole of it. The typeface, the tabular numerals, the label, the\n * change beside the number and `data-gs-value` are all stat's and all\n * unchanged, so a host reads `3` while a player reads `x3`.\n *\n * No stylesheet: it adds no styling, and stat already sizes a multiplier.\n */\n\nexport type MultiplierProps = Omit<StatProps, 'kind' | 'format'>\n\nexport function Multiplier(props: MultiplierProps) {\n  const { strings, ...componentProps } = props\n  const copy = useStrings(strings)\n\n  return <Stat {...componentProps} strings={copy} component=\"multiplier\" kind=\"multiplier\" format={(value) => copy['multiplier.value'](value)} />\n}\n",
       "type": "registry:ui",
       "target": "components/gamestage/multiplier.tsx"
     }

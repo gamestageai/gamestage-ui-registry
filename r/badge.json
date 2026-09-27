@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "badge",
+  "title": "Badge",
+  "description": "The tier-ringed roundel specimens 3d and 4d draw a row of: one disc whose ring says the tier and whose centre is a glyph slot the host fills, with no name under it, because a badge row is read as a row of marks. It is `reward` with `presentation=\"badge\"` and nothing else, because a badge is an earned reward with no card: the same lifecycle, the same accessible name and the same attributes, a disc instead of a rectangle. GSUI-135 settled that for the card and the reveal and this is the same answer a third time, so the four states are written down once rather than twice. It is its own item for the reason `multiplier` is: a profile holding a row of badges beside a reward card needs to tell them apart, and `[data-gs-component=\"badge\"]` is how, where asking for the presentation means knowing that a badge is a reward before you can find one. Gold, silver and bronze are the tiers; `featured` is the fourth value and is not a fourth metal, it is the one the surface is leading with, drawn larger, filled and glowing. Pass `data-gs-size=\"small\"` for the profile's row, where six share a phone width. Performs nothing: it does not earn, award or claim anything. Use `reward` directly for the card, the tap-to-reveal surface or the inventory cell.",
+  "dependencies": [
+    "react"
+  ],
+  "registryDependencies": [
+    "@gamestage/reward"
+  ],
+  "files": [
+    {
+      "path": "packages/ui/src/badge/badge.tsx",
+      "content": "'use client'\n\nimport { Reward, type RewardProps } from './reward'\n\n/**\n * Badge: `reward` drawn as the tier-ringed roundel of specimens 3d and 4d.\n *\n * A badge is an earned reward with no card: the same lifecycle, the same\n * accessible name, the same attributes, and a disc instead of a rectangle.\n * GSUI-135 settled that argument for the card and the reveal already, and\n * this is the same answer a third time, so the roundel is a presentation on\n * reward rather than a component with a lifecycle of its own. Four states\n * would otherwise be written down twice, and the second copy is where they\n * drift.\n *\n * It exists as its own item for the reason `multiplier` does. A profile\n * holding a row of badges beside a reward card needs to tell them apart, and\n * `[data-gs-component=\"badge\"]` is how a host and a test do that; asking for\n * `[data-gs-presentation=\"badge\"]` means knowing that a badge is a reward\n * before you can find one. It also means a host adding badges installs a\n * name it recognises.\n *\n * No stylesheet: reward already draws the roundel.\n *\n * The overflow disc at the end of the profile's row, the one reading +18, is\n * not this. It stands for the badges that are not drawn rather than for a\n * badge, so it belongs to whatever draws the row; specimen 4d puts it in the\n * profile's badge row and `inventory` is the component that owns a collection\n * of rewards.\n */\n\nexport type BadgeProps = Omit<RewardProps, 'presentation' | 'component' | 'progress' | 'max'>\n\nexport function Badge(props: BadgeProps) {\n  return <Reward {...props} presentation=\"badge\" component=\"badge\" />\n}\n",
+      "type": "registry:ui",
+      "target": "components/gamestage/badge.tsx"
+    }
+  ],
+  "docs": "Pass `id`, `state` and `label` as you would to any reward, and `tier` for the ring. `media` fills the centre of the disc; without it a locked badge draws the padlock and a claimed one the tick. `onSelect` makes the whole disc the button and is called with the id; what opens next is the host's. There is no `progress` and no `max`: a disc has nowhere to draw a track, so a reward the player is working towards is a card.",
+  "categories": [
+    "Rewards"
+  ],
+  "type": "registry:ui"
+}
