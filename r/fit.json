@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fit",
+  "title": "Fit",
+  "description": "How a stage occupies the screen, readable by any component inside it: the StageFit type, the set of fixed layouts, and useStageFit / useFixedSpace. Its own item so a component can choose defaults that suit a fixed screen (a leaderboard showing the top five) without installing Stage. Provided by Stage.",
+  "dependencies": [
+    "react"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "packages/ui/src/runtime/fit/fit.tsx",
+      "content": "'use client'\n\nimport * as React from 'react'\n\n/**\n * How a stage occupies the screen, readable by any component inside it.\n *\n * Its own item rather than part of Stage, so a leaderboard can choose defaults\n * that suit a fixed screen without installing Stage. GSUI-282.\n */\nexport type StageFit = 'screen' | 'canvas' | 'launch' | 'card' | 'page' | 'sheet'\n\n/** The layouts in which space is fixed, so a component should save height. */\nexport const FIXED_FITS: ReadonlySet<StageFit> = new Set(['screen', 'canvas', 'card', 'sheet'])\n\nconst StageFitContext = React.createContext<StageFit | undefined>(undefined)\n\n/** Provided by Stage; a host with its own shell may provide it directly. */\nexport const StageFitProvider = StageFitContext.Provider\n\n/**\n * The fit of the nearest stage, so a component can choose defaults that suit\n * it: a leaderboard showing the top five and your row on a fixed screen, and\n * every row on a page. Undefined outside a stage, or in one with no fit.\n */\nexport function useStageFit(): StageFit | undefined {\n  return React.useContext(StageFitContext)\n}\n\n/** True inside a stage whose space is fixed. */\nexport function useFixedSpace(): boolean {\n  const fit = useStageFit()\n  return fit !== undefined && FIXED_FITS.has(fit)\n}\n",
+      "type": "registry:lib",
+      "target": "components/gamestage/fit.tsx"
+    }
+  ],
+  "cssVars": {},
+  "docs": "Stage provides the fit. A host with its own shell can wrap a subtree in <StageFitProvider value=\"screen\"> instead. useFixedSpace() is true in screen, canvas, card and sheet, and in launch only while it is open (Stage decides that).",
+  "categories": [
+    "Foundations"
+  ],
+  "type": "registry:base"
+}

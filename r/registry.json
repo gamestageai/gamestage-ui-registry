@@ -461,6 +461,28 @@
       "docs": "Pass `name`, `label` and the `control` the player works: `text` is the default, `checkbox` and `radio` are pressed and render raised. Pass `requirement` to state required or optional in words. Pass `invalid` and `reason` together when your own validation fails a value; the field never decides that itself, and a `reason` on its own is a rule explained rather than a failure. Anything else you pass reaches the `<input>`, so `value`, `onChange`, `placeholder`, `inputMode` and `autoComplete` all work as they do on a native control. Find a field with `[data-gs-field=\"<name>\"]` and its control with `[data-gs-part=\"control\"]`."
     },
     {
+      "name": "fit",
+      "type": "registry:base",
+      "title": "Fit",
+      "description": "How a stage occupies the screen, readable by any component inside it: the StageFit type, the set of fixed layouts, and useStageFit / useFixedSpace. Its own item so a component can choose defaults that suit a fixed screen (a leaderboard showing the top five) without installing Stage. Provided by Stage.",
+      "categories": [
+        "Foundations"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "packages/ui/src/runtime/fit/fit.tsx",
+          "type": "registry:lib",
+          "target": "components/gamestage/fit.tsx"
+        }
+      ],
+      "cssVars": {},
+      "docs": "Stage provides the fit. A host with its own shell can wrap a subtree in <StageFitProvider value=\"screen\"> instead. useFixedSpace() is true in screen, canvas, card and sheet, and in launch only while it is open (Stage decides that)."
+    },
+    {
       "name": "fonts-arcade",
       "type": "registry:font",
       "title": "Gamestage fonts, arcade",
@@ -801,6 +823,7 @@
         "react"
       ],
       "registryDependencies": [
+        "@gamestage/fit",
         "@gamestage/glyphs",
         "@gamestage/identity",
         "@gamestage/stat",
@@ -818,7 +841,7 @@
           "target": "components/gamestage/leaderboard.css"
         }
       ],
-      "docs": "Hand `entries` over already ranked; this never sorts and never pages. Set `you` on the player's entry and a pinned copy of that row is held on screen, marked `data-gs-pinned`; pass `pinYou={false}` where the board is short enough not to need it. Set `delta` to the signed number of places a row just moved and the badge and the colour follow the sign. A reordering list is a screen-reader trap, so the list itself is not a live region: one polite status announces the player's own rank change and nothing else. An empty board renders `data-gs-empty=\"true\"` with a designed empty case; pass `emptyAction` to give it the next step. Player names are rendered as text, never as markup. Installs into `components/gamestage/leaderboard/` rather than flat beside the others, so that its relative import of `stat` resolves to the same file in an installed app as it does in this repo. Changing the target to a flat file breaks that import."
+      "docs": "Hand `entries` over already ranked; this never sorts and never pages. Set `you` on the player's entry and a pinned copy of that row is held on screen, marked `data-gs-pinned`; pass `pinYou={false}` where the board is short enough not to need it. Set `delta` to the signed number of places a row just moved and the badge and the colour follow the sign. A reordering list is a screen-reader trap, so the list itself is not a live region: one polite status announces the player's own rank change and nothing else. An empty board renders `data-gs-empty=\"true\"` with a designed empty case; pass `emptyAction` to give it the next step. Player names are rendered as text, never as markup. Installs into `components/gamestage/leaderboard/` rather than flat beside the others, so that its relative import of `stat` resolves to the same file in an installed app as it does in this repo. Changing the target to a flat file breaks that import. Inside a stage whose space is fixed it shows the top five by default, then a gap and the player's own row if they are further down, and a See all button, which shows every row in place, or calls `onSeeAll` so the host can open them in its own Sheet; pass `limit` to set the number, or 'all' to show every row. GSUI-282."
     },
     {
       "name": "level-ring",
@@ -1733,10 +1756,11 @@
         "react"
       ],
       "registryDependencies": [
-        "@gamestage/tokens",
-        "@gamestage/label-fit",
+        "@gamestage/fit",
         "@gamestage/glyphs",
-        "@gamestage/strings"
+        "@gamestage/label-fit",
+        "@gamestage/strings",
+        "@gamestage/tokens"
       ],
       "files": [
         {
