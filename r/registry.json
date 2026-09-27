@@ -875,6 +875,35 @@
       "docs": "Pass `value` as lives remaining and `max` as the total; the dots are drawn from those two numbers and nothing else carries them, so there is one source of truth for one count. Pass `delta={-1}` on the render after a life goes, and stat renders the change beside the number. Pass `critical` when the host decides the player is down to the last of them; stat turns its own number and glyph and the dots follow, with no second attribute. The dots are `aria-hidden`, because stat already announces \"lives, 1 of 3\" and announcing them again would read the number twice. There is no stylesheet of its own: `presentation=\"dots\"` is drawn by `@gamestage/stat`, which lives already depends on. Pass `presentation` to draw the number some other way; `dots` is the default because it is what the design draws."
     },
     {
+      "name": "loading",
+      "type": "registry:ui",
+      "title": "Loading",
+      "description": "The state a player sees while a game is being fetched, drawn rather than written: a spinner when there is no measure of progress, a bar when there is. It fills its container and centres one mark, so the game that replaces it arrives in one step rather than jumping in; its words are for screen readers only, and reduced motion turns the spin into a slow pulse. `role=\"status\"` with `aria-busy`, and a determinate bar is a `progressbar` with its value. GSUI-282.",
+      "categories": [
+        "Flow and guidance"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/strings"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/loading/loading.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/loading.tsx"
+        },
+        {
+          "path": "packages/ui/src/loading/loading.css",
+          "type": "registry:style",
+          "target": "components/gamestage/loading.css"
+        }
+      ],
+      "docs": "`<Loading />` for a spinner, `<Loading variant=\"bar\" value={0.6} />` for a bar 60% through, or `variant=\"bar\"` with no value for one that sweeps. Put it where the game will be, in a container that already has the game's size, and replace it when the round is drawn. Words come from `loading.label` and `loading.progress` in strings. The page's first paint, before any script runs, is the host HTML's job: paint the game's background on html and body and draw the same mark there."
+    },
+    {
       "name": "login",
       "type": "registry:ui",
       "title": "Login",
@@ -1704,7 +1733,10 @@
         "react"
       ],
       "registryDependencies": [
-        "@gamestage/tokens"
+        "@gamestage/tokens",
+        "@gamestage/label-fit",
+        "@gamestage/glyphs",
+        "@gamestage/strings"
       ],
       "files": [
         {
@@ -1718,7 +1750,7 @@
           "target": "components/gamestage/stage.css"
         }
       ],
-      "docs": "Pass the scene as `scene` and the library's own layers as `Stage.Layer` children: `<Stage scene={<canvas/>}><Stage.Layer layer=\"hud\" placement=\"top\"><Hud …/></Stage.Layer></Stage>`. `layer` is the closed set `scene`, `behind`, `hud`, `interaction`, `overlay`, `nav`, `celebration`, bottom to top, and decides the stacking order and where the layer sits, which belong to the library. `interaction` is the choice grid, slider or form the player answers with: it sits directly above the nav shell (declare the shell's height as `--gs-stage-nav-height` on the stage), 10px in from each side, no taller than 40% of the stage, and takes presses. `nav` placed `bottom` spans the glass and pays the home indicator's inset inside itself. `placement` pins an edge layer; a layer with no placement covers the stage. `pointer` overrules the default when the host knows better, which is the case a modal overlay needs: pass `pointer=\"auto\"` on an overlay meant to block the scene. Omitting `scene` is supported and renders no scene layer at all, because a quiz with nothing behind it uses the same components as a Unity build; the host's container then gives the stage its height. Pass `safeArea={false}` only when the host has already padded for the device's insets. Stage depends on tokens alone: bds.md's dependency table lists it against `hud`, which is what the reference screen composes rather than what the component imports, and a stage that imported a HUD could not be the thing a host puts its own components into."
+      "docs": "Pass the scene as `scene` and the library's own layers as `Stage.Layer` children: `<Stage scene={<canvas/>}><Stage.Layer layer=\"hud\" placement=\"top\"><Hud …/></Stage.Layer></Stage>`. `layer` is the closed set `scene`, `behind`, `hud`, `interaction`, `overlay`, `nav`, `celebration`, bottom to top, and decides the stacking order and where the layer sits, which belong to the library. `interaction` is the choice grid, slider or form the player answers with: it sits directly above the nav shell (declare the shell's height as `--gs-stage-nav-height` on the stage), 10px in from each side, no taller than 40% of the stage, and takes presses. `nav` placed `bottom` spans the glass and pays the home indicator's inset inside itself. `placement` pins an edge layer; a layer with no placement covers the stage. `pointer` overrules the default when the host knows better, which is the case a modal overlay needs: pass `pointer=\"auto\"` on an overlay meant to block the scene. Omitting `scene` is supported and renders no scene layer at all, because a quiz with nothing behind it uses the same components as a Unity build; the host's container then gives the stage its height. Pass `safeArea={false}` only when the host has already padded for the device's insets. Stage depends on tokens alone: bds.md's dependency table lists it against `hud`, which is what the reference screen composes rather than what the component imports, and a stage that imported a HUD could not be the thing a host puts its own components into. `fit` says how the stage occupies the screen (GSUI-282): `screen` fills the visible height and holds the page still; `canvas` draws at `design` size and scales to fit; `launch` shows `preview` and `launchLabel` in the host page and opens the game full screen over it, returning scroll and focus on close; `card` is a fixed-proportion box in a scrolling page (`--gs-stage-aspect`, 9/16 by default); `page` scrolls; `sheet` rises from the foot (`--gs-stage-sheet-height`). In the fixed layouts, labels inside shrink before they wrap unless the host sets otherwise, and `useStageFit()` tells any component which layout it is in. Omit `fit` for the stage as it always was."
     },
     {
       "name": "stat",
