@@ -280,7 +280,8 @@
         "@gamestage/tokens",
         "@gamestage/button",
         "@gamestage/toggle",
-        "@gamestage/strings"
+        "@gamestage/strings",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
