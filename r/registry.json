@@ -547,12 +547,12 @@
       "name": "fonts-arcade",
       "type": "registry:font",
       "title": "Gamestage fonts, arcade",
-      "description": "Unbounded for the numbers and actions a player tracks, DM Sans for interface text, self-hosted. The arcade theme names Unbounded as its display family; this item is what puts it on the page. It declares the same two faces as @gamestage/fonts and depends on that item for the files rather than shipping a second copy of them. No request leaves for a third-party origin (GSUI-149). Installed for you by @gamestage/theme-arcade.",
+      "description": "DM Sans for everything, the same face as @gamestage/fonts, self-hosted. Arcade used to set numbers and actions in Unbounded; one face per theme replaced that (GSUI-292). It depends on @gamestage/fonts for the file rather than shipping a second copy. No request leaves for a third-party origin (GSUI-149). Installed for you by @gamestage/theme-arcade.",
       "categories": [
         "Foundations"
       ],
       "font": {
-        "family": "Unbounded",
+        "family": "DM Sans",
         "provider": "self-hosted",
         "import": "",
         "variable": "--gs-type-font-family-display",
@@ -583,7 +583,7 @@
       "name": "fonts-paper",
       "type": "registry:font",
       "title": "Gamestage fonts, paper",
-      "description": "IBM Plex Sans for interface text and Instrument Serif for the numbers a player tracks, self-hosted. Neither is in the base pairing, so a paper install without this item renders in system-ui and Georgia. No request leaves for a third-party origin (GSUI-149). Installed for you by @gamestage/theme-paper.",
+      "description": "IBM Plex Sans, the one face the paper theme sets everything in, numbers included, self-hosted (GSUI-292). Without this item a paper install renders in system-ui. No request leaves for a third-party origin (GSUI-149). Installed for you by @gamestage/theme-paper.",
       "categories": [
         "Foundations"
       ],
@@ -614,27 +614,12 @@
           "target": "app/gamestage-fonts/ibm-plex-sans-latin.woff2"
         },
         {
-          "path": "packages/tokens/gamestage-fonts/instrument-serif-latin.woff2",
-          "type": "registry:file",
-          "target": "app/gamestage-fonts/instrument-serif-latin.woff2"
-        },
-        {
-          "path": "packages/tokens/gamestage-fonts/instrument-serif-italic-latin.woff2",
-          "type": "registry:file",
-          "target": "app/gamestage-fonts/instrument-serif-italic-latin.woff2"
-        },
-        {
           "path": "packages/tokens/gamestage-fonts/ibm-plex-sans-OFL.txt",
           "type": "registry:file",
           "target": "app/gamestage-fonts/ibm-plex-sans-OFL.txt"
-        },
-        {
-          "path": "packages/tokens/gamestage-fonts/instrument-serif-OFL.txt",
-          "type": "registry:file",
-          "target": "app/gamestage-fonts/instrument-serif-OFL.txt"
         }
       ],
-      "docs": "Import gamestage-fonts-paper.css once at the root, before gamestage-tokens.css, in place of gamestage-fonts.css. The woff2 files land in app/gamestage-fonts/ beside it and the stylesheet finds them by relative path, so serve that directory as a static asset. Three faces, about 71KB: IBM Plex Sans as one variable file covering 400 to 700, and Instrument Serif as an upright and an italic, because that family has no weight axis. Latin only, which covers western Europe and not Polish, Czech, Turkish or Vietnamese. It depends on @gamestage/fonts as well, because a page on the paper theme still renders components that ask for the base families. The licences, the versions and where each file came from are in packages/tokens/gamestage-fonts/README.md, and each OFL.txt ships beside the faces because the licence has to travel with them.",
+      "docs": "Import gamestage-fonts-paper.css once at the root, before gamestage-tokens.css, in place of gamestage-fonts.css. The woff2 file lands in app/gamestage-fonts/ beside it and the stylesheet finds it by relative path, so serve that directory as a static asset. One variable file covering 400 to 700. Latin only, which covers western Europe and not Polish, Czech, Turkish or Vietnamese. The licence, the version and where the file came from are in packages/tokens/gamestage-fonts/README.md, and the OFL.txt ships beside the face because the licence has to travel with it.",
       "registryDependencies": [
         "@gamestage/fonts"
       ]
@@ -643,7 +628,7 @@
       "name": "fonts",
       "type": "registry:font",
       "title": "Gamestage fonts",
-      "description": "DM Sans for interface text and Unbounded for numbers a player tracks (score, timer, rank, multiplier, level), self-hosted. No request leaves for a third-party origin: the Google Fonts @import this used to carry sent every player's IP address to Google on page load, before any consent gate could run, and that stopped a prize draw in four territories (GSUI-149). Kept in a separate stylesheet so a customer with their own typeface can replace the font loading without forking the components. Renders nothing, creates no DOM and sets no root attribute: it loads font faces and does not apply the token styles. `tokens` lists this item as a registry dependency, so installing tokens installs it too, and the fonts stylesheet is imported before the tokens stylesheet. For a customer typeface, supply that font stylesheet and override the font tokens rather than importing this one.",
+      "description": "DM Sans, the one face the base theme sets everything in, numbers included, self-hosted (GSUI-292). No request leaves for a third-party origin: the Google Fonts @import this used to carry sent every player's IP address to Google on page load, before any consent gate could run, and that stopped a prize draw in four territories (GSUI-149). Kept in a separate stylesheet so a customer with their own typeface can replace the font loading without forking the components. Renders nothing, creates no DOM and sets no root attribute: it loads font faces and does not apply the token styles. `tokens` lists this item as a registry dependency, so installing tokens installs it too, and the fonts stylesheet is imported before the tokens stylesheet. For a customer typeface, supply that font stylesheet and override the font tokens rather than importing this one.",
       "categories": [
         "Foundations"
       ],
@@ -676,22 +661,12 @@
           "target": "app/gamestage-fonts/dm-sans-latin.woff2"
         },
         {
-          "path": "packages/tokens/gamestage-fonts/unbounded-latin.woff2",
-          "type": "registry:file",
-          "target": "app/gamestage-fonts/unbounded-latin.woff2"
-        },
-        {
           "path": "packages/tokens/gamestage-fonts/dm-sans-OFL.txt",
           "type": "registry:file",
           "target": "app/gamestage-fonts/dm-sans-OFL.txt"
-        },
-        {
-          "path": "packages/tokens/gamestage-fonts/unbounded-OFL.txt",
-          "type": "registry:file",
-          "target": "app/gamestage-fonts/unbounded-OFL.txt"
         }
       ],
-      "docs": "Declares DM Sans (interface text, weights 400-900) and Unbounded (numbers a player tracks, weights 500-900) from files served by your own origin. Import gamestage-fonts.css once at the root, before gamestage-tokens.css; the woff2 files land in app/gamestage-fonts/ beside it and the stylesheet finds them by relative path, so serve that directory as a static asset. Both faces are latin only, which covers western Europe and not Polish, Czech, Turkish or Vietnamese. About 88KB for the two. The `font` block is metadata the installer reads for nothing; the @font-face rules in the stylesheet are the only loading mechanism this item ships, and `font.import` is blank because there is nothing remote to import. The licences, the versions and where each file came from are in packages/tokens/gamestage-fonts/README.md, and each OFL.txt ships beside the faces because the licence has to travel with them."
+      "docs": "Declares DM Sans from a file served by your own origin. The scale uses two weights, 400 and 600 (GSUI-292). Import gamestage-fonts.css once at the root, before gamestage-tokens.css; the woff2 files land in app/gamestage-fonts/ beside it and the stylesheet finds them by relative path, so serve that directory as a static asset. The face is latin only, which covers western Europe and not Polish, Czech, Turkish or Vietnamese.  The `font` block is metadata the installer reads for nothing; the @font-face rules in the stylesheet are the only loading mechanism this item ships, and `font.import` is blank because there is nothing remote to import. The licences, the versions and where each file came from are in packages/tokens/gamestage-fonts/README.md, and the OFL.txt ships beside the face because the licence has to travel with them."
     },
     {
       "name": "form",
@@ -2042,7 +2017,7 @@
       "name": "theme-paper",
       "type": "registry:style",
       "title": "Paper theme",
-      "description": "A quiet printed look for editorial and broadcast furniture: near-white surfaces, square corners, hairline rules, an IBM Plex Sans and Instrument Serif pairing, and a press that squeezes and shifts colour instead of dropping 6px. Install it, then set data-gs-theme=\"paper\" on the root.",
+      "description": "A quiet printed look for editorial and broadcast furniture: near-white surfaces, square corners, hairline rules, IBM Plex Sans for everything, numbers included, and a press that squeezes and shifts colour instead of dropping 6px. Install it, then set data-gs-theme=\"paper\" on the root.",
       "categories": [
         "Foundations"
       ],
@@ -2078,7 +2053,7 @@
           "target": "app/gamestage-theme-stadium.css"
         }
       ],
-      "docs": "Import gamestage-theme-stadium.css after gamestage-tokens.css, and set data-gs-theme=\"stadium\" on <html> or on any subtree. Stadium changes colour and nothing else, and keeps the base DM Sans and Unbounded pairing, which is why it depends on @gamestage/fonts rather than on a font item of its own. Compare it with @gamestage/theme-paper, which changes typeface, press gesture, edge treatment and radius as well."
+      "docs": "Import gamestage-theme-stadium.css after gamestage-tokens.css, and set data-gs-theme=\"stadium\" on <html> or on any subtree. Stadium changes colour and nothing else, and keeps the base DM Sans for everything, which is why it depends on @gamestage/fonts rather than on a font item of its own. Compare it with @gamestage/theme-paper, which changes typeface, press gesture, edge treatment and radius as well."
     },
     {
       "name": "timer",

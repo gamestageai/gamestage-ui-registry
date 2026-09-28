@@ -2,14 +2,14 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "fonts-arcade",
   "title": "Gamestage fonts, arcade",
-  "description": "Unbounded for the numbers and actions a player tracks, DM Sans for interface text, self-hosted. The arcade theme names Unbounded as its display family; this item is what puts it on the page. It declares the same two faces as @gamestage/fonts and depends on that item for the files rather than shipping a second copy of them. No request leaves for a third-party origin (GSUI-149). Installed for you by @gamestage/theme-arcade.",
+  "description": "DM Sans for everything, the same face as @gamestage/fonts, self-hosted. Arcade used to set numbers and actions in Unbounded; one face per theme replaced that (GSUI-292). It depends on @gamestage/fonts for the file rather than shipping a second copy. No request leaves for a third-party origin (GSUI-149). Installed for you by @gamestage/theme-arcade.",
   "registryDependencies": [
     "@gamestage/fonts"
   ],
   "files": [
     {
       "path": "packages/tokens/fonts-arcade.css",
-      "content": "/* Gamestage fonts, arcade theme.\n\n   Arcade uses the same two faces as the base pairing, DM Sans and Unbounded.\n   It named Bungee as its display face until GSUI-171, which is a face the\n   design never names.\n\n   The two declarations are repeated here and the two files are not. The\n   `fonts-arcade` item depends on `@gamestage/fonts`, which is what ships\n   gamestage-fonts/, so a customer installing the arcade theme gets one copy of\n   each face on disk, about 88KB, rather than two. If arcade ever takes a face\n   the base pairing does not have, add its @font-face here and its file beside\n   the others; do not duplicate a face that is already shared.\n\n   A theme may name any family it likes, because type.fontFamily.interface and\n   .display are tokens; what it cannot do is load one. Without this stylesheet\n   the family is simply absent and the theme looks as though it changed nothing.\n\n   Import once at the root, before gamestage-tokens.css, in place of\n   gamestage-fonts.css. Nothing here reaches a third-party origin; the reason,\n   the licences and the provenance are in gamestage-fonts/README.md (GSUI-149).\n   The url() paths are relative to this stylesheet and resolve the same way in\n   this repository and in a customer's app. */\n\n@font-face {\n  font-family: 'DM Sans';\n  font-style: normal;\n  font-weight: 400 900;\n  font-display: swap;\n  src: url('./gamestage-fonts/dm-sans-latin.woff2') format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,\n    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,\n    U+2212, U+2215, U+FEFF, U+FFFD;\n}\n\n@font-face {\n  font-family: 'Unbounded';\n  font-style: normal;\n  font-weight: 500 900;\n  font-display: swap;\n  src: url('./gamestage-fonts/unbounded-latin.woff2') format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,\n    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,\n    U+2212, U+2215, U+FEFF, U+FFFD;\n}\n",
+      "content": "/* Gamestage fonts, arcade theme. Arcade sets everything in DM Sans, the base\n   face, so this declares the same face as gamestage-fonts.css and ships no\n   file of its own. Its character comes from colour, depth and weight, not a\n   second face: one face per theme, GSUI-292, Tom 2026-09-28. */\n\n@font-face {\n  font-family: 'DM Sans';\n  font-style: normal;\n  font-weight: 400 900;\n  font-display: swap;\n  src: url('./gamestage-fonts/dm-sans-latin.woff2') format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,\n    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,\n    U+2212, U+2215, U+FEFF, U+FFFD;\n}\n\n",
       "type": "registry:style",
       "target": "app/gamestage-fonts-arcade.css"
     }
@@ -20,7 +20,7 @@
   ],
   "type": "registry:font",
   "font": {
-    "family": "Unbounded",
+    "family": "DM Sans",
     "provider": "self-hosted",
     "import": "",
     "variable": "--gs-type-font-family-display",
