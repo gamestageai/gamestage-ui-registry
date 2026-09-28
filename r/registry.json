@@ -1325,6 +1325,38 @@
       "docs": "Pass `places` in rank order; anything past the third is dropped. The visual arrangement comes from `order` keyed on `data-gs-rank`, so the DOM stays in rank order and the podium reads correctly with the stylesheet off. Set `you` on the player's place for the marked treatment and the word the accessible-name table fixes. An empty podium renders `data-gs-empty=\"true\"` with a designed empty case; pass `emptyAction` to give it the next step. Player names are rendered as text, never as markup. Installs into `components/gamestage/podium/` rather than flat beside the others, so that its relative import of `stat` resolves to the same file in an installed app as it does in this repo. Changing the target to a flat file breaks that import."
     },
     {
+      "name": "preferences",
+      "type": "registry:ui",
+      "title": "Preferences",
+      "description": "A fan's settings for a game, as one group on their Profile: a heading, then full-width rows joined into one list, a toggle at the end of a row that switches and a chevron at the end of a row that opens something, and a small link under the group for things like Report copyright infringement. A `slot` row is one the Gamestage client fills, such as data-gs-slot=\"privacy-settings\", so its Privacy settings control is drawn as a row of the group. Owns no words and performs nothing: a toggle reports its new value and a row reports the press.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/strings",
+        "@gamestage/glyphs",
+        "@gamestage/row",
+        "@gamestage/toggle"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/preferences/preferences.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/preferences.tsx"
+        },
+        {
+          "path": "packages/ui/src/preferences/preferences.css",
+          "type": "registry:style",
+          "target": "components/gamestage/preferences.css"
+        }
+      ],
+      "docs": "Pass `title` and `items`: `{ kind: 'toggle', label, checked, onChange }`, `{ kind: 'link', label, onOpen }`, or `{ kind: 'slot', slot: 'privacy-settings' }` for the row the client fills. Pass `footer` for a small link below the group. Every word comes from the host, which reads it from Studio."
+    },
+    {
       "name": "presence",
       "type": "registry:ui",
       "title": "Presence",
