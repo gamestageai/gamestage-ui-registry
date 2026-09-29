@@ -547,21 +547,17 @@
       "name": "fonts-arcade",
       "type": "registry:font",
       "title": "Gamestage fonts, arcade",
-      "description": "DM Sans for everything, the same face as @gamestage/fonts, self-hosted. Arcade used to set numbers and actions in Unbounded; one face per theme replaced that (GSUI-292). It depends on @gamestage/fonts for the file rather than shipping a second copy. No request leaves for a third-party origin (GSUI-149). Installed for you by @gamestage/theme-arcade.",
+      "description": "DM Sans for everything a player reads, from @gamestage/fonts, and Bungee, self-hosted, for arcade's primary action and figures only (Tom, 2026-09-28). No request leaves for a third-party origin (GSUI-149). Installed for you by @gamestage/theme-arcade.",
       "categories": [
         "Foundations"
       ],
       "font": {
-        "family": "DM Sans",
+        "family": "Bungee",
         "provider": "self-hosted",
         "import": "",
         "variable": "--gs-type-font-family-display",
         "weight": [
-          "500",
-          "600",
-          "700",
-          "800",
-          "900"
+          "400"
         ],
         "subsets": [
           "latin"
@@ -572,6 +568,16 @@
           "path": "packages/tokens/fonts-arcade.css",
           "type": "registry:style",
           "target": "app/gamestage-fonts-arcade.css"
+        },
+        {
+          "path": "packages/tokens/gamestage-fonts/bungee-latin.woff2",
+          "type": "registry:file",
+          "target": "app/gamestage-fonts/bungee-latin.woff2"
+        },
+        {
+          "path": "packages/tokens/gamestage-fonts/bungee-OFL.txt",
+          "type": "registry:file",
+          "target": "app/gamestage-fonts/bungee-OFL.txt"
         }
       ],
       "docs": "Import gamestage-fonts-arcade.css once at the root, before gamestage-tokens.css, in place of gamestage-fonts.css. It declares the same two faces the base pairing does, because arcade uses the same two, and the files come from @gamestage/fonts rather than from here: one copy on disk, not two. A theme can name any family it likes, because the families are tokens; what it cannot do is load one, and a theme whose family is not loaded falls through its stack in silence and looks like a theme that changed nothing. The licences, the versions and where each file came from are in packages/tokens/gamestage-fonts/README.md, and each OFL.txt ships beside the faces because the licence has to travel with them.",
