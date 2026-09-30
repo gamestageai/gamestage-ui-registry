@@ -943,7 +943,7 @@
       "name": "loading",
       "type": "registry:ui",
       "title": "Loading",
-      "description": "The state a player sees while a game is being fetched, drawn rather than written: a spinner when there is no measure of progress, a bar when there is. It fills its container and centres one mark, so the game that replaces it arrives in one step rather than jumping in; its words are for screen readers only, and reduced motion turns the spin into a slow pulse. `role=\"status\"` with `aria-busy`, and a determinate bar is a `progressbar` with its value. GSUI-282.",
+      "description": "The state a player sees while a game is being fetched, drawn rather than written: a spinner when there is no measure of progress, a bar when there is. It fills its container and centres one mark, so the game that replaces it arrives in one step rather than jumping in; its words are for screen readers only, and reduced motion turns the spin into a slow pulse. `role=\"status\"` with `aria-busy`, and a determinate bar is a `progressbar` with its value. GSUI-282. `GamestageLoader` is the default loader for a Gamestage game: the Gamestage mark, \"Made with Gamestage, by Monterosa\" and a sweeping track, held over the whole screen until the game is ready, then faded.",
       "categories": [
         "Flow and guidance"
       ],
@@ -966,7 +966,7 @@
           "target": "components/gamestage/loading.css"
         }
       ],
-      "docs": "`<Loading />` for a spinner, `<Loading variant=\"bar\" value={0.6} />` for a bar 60% through, or `variant=\"bar\"` with no value for one that sweeps. Put it where the game will be, in a container that already has the game's size, and replace it when the round is drawn. Words come from `loading.label` and `loading.progress` in strings. The page's first paint, before any script runs, is the host HTML's job: paint the game's background on html and body and draw the same mark there."
+      "docs": "`<Loading />` for a spinner, `<Loading variant=\"bar\" value={0.6} />` for a bar 60% through, or `variant=\"bar\"` with no value for one that sweeps. Put it where the game will be, in a container that already has the game's size, and replace it when the round is drawn. Words come from `loading.label` and `loading.progress` in strings. The page's first paint, before any script runs, is the host HTML's job: paint the game's background on html and body and draw the same mark there. For a whole game, render `<GamestageLoader ready={ready} />` above the game from the first render, draw the game underneath from the start, and set `ready` once its first screen is drawn: one loader, fixed to the screen, so nothing jumps as the game arrives. Preload the mark in the page's HTML with `<link rel=\"preload\" as=\"image\" href=\"https://gamestage.ai/ink/chopsticks-rest.png\" crossorigin=\"anonymous\" />`."
     },
     {
       "name": "login",
