@@ -2031,6 +2031,42 @@
       "docs": "Import defaultStrings, StringsProvider, useStrings and the Strings / StringsOverrides types from ./strings. Wrap the app in <StringsProvider strings={{ 'choice.lockedIn': 'Zatwierdzono' }}> to supply a partial vocabulary, or omit the provider for English. A component calls useStrings(props.strings): its partial strings prop wins over the provider, and missing entries retain their defaults. Change the provider's strings object to switch language at runtime. Nested providers inherit their parent. Undefined entries fall through; an empty string is an intentional override. Replace a whole formatter, for example { 'selector.previous': (label) => `${label}: poprzedni` }, so the host controls word order and plural rules. Existing word props, such as label and commitLabel, take precedence over all vocabulary layers."
     },
     {
+      "name": "swipe-deck",
+      "type": "registry:ui",
+      "title": "Swipe deck",
+      "description": "A stack of cards a player throws one at a time: left for No, right for Yes, and up when you name an answer for it. The top card follows the finger, turns with its sideways travel and shows the badge of the answer it is heading for, growing to full at the commit line. Let go past the line, or flick, and it flies off while the next card rises; let go short and it springs back. Selector's swipe card made real, with the same surface, badge and `data-gs-swipe` contract. Answer buttons under the deck and the arrow keys on the focused card make it fully usable without a gesture, and a screen reader hears each card, its position and the outcome. Under reduced motion the card does not turn or fly: it fades and the next is there at once. Reports the direction through `onSwipe` and decides nothing: your app says what a direction means.",
+      "categories": [
+        "Controls"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/strings",
+        "@gamestage/glyphs",
+        "@gamestage/button"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/swipe-deck/swipe-deck.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/swipe-deck.tsx"
+        },
+        {
+          "path": "packages/ui/src/swipe-deck/swipe-deck-gestures.ts",
+          "type": "registry:lib",
+          "target": "components/gamestage/swipe-deck-gestures.ts"
+        },
+        {
+          "path": "packages/ui/src/swipe-deck/swipe-deck.css",
+          "type": "registry:style",
+          "target": "components/gamestage/swipe-deck.css"
+        }
+      ],
+      "docs": "Pass `label`, what the deck is for a screen reader, and `cards`, top first, each `{ id, label, detail?, media? }`. `onSwipe(cardId, direction)` fires as a card is thrown, by gesture, button or arrow key; the direction is `left`, `right` or `up`, and your app decides what it means. `answers` names the words: `{ left: 'No', right: 'Yes' }` by default, and naming `up` turns the up answer on. Pass `onUndo` to offer Undo, which brings the last card back and tells you which. Pass `empty` for what shows when the deck runs out. Put the deck in a screen that clips its overflow, such as Stage, so a thrown card leaves the screen rather than widening the page."
+    },
+    {
       "name": "theme-arcade",
       "type": "registry:style",
       "title": "Arcade theme",
