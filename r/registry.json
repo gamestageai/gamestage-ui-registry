@@ -1759,7 +1759,7 @@
           "target": "components/gamestage/selector.css"
         }
       ],
-      "docs": "Use presentation=\"segmented\" for two to four options a player compares at a glance, \"dropdown\" for a long list, and \"stepper\" for an ordered scale. Set interaction=\"hold\" for a hold-to-charge commit and \"swipe\" for a swipe card; both always commit, because a charge that has filled and a gesture that has landed are deliberate acts. Set commitOnSelect for a fast tap round; leave it off when the player should be able to change their mind. Space held charges a hold and Enter commits it outright, so a player who cannot hold a key can still play."
+      "docs": "Use presentation=\"segmented\" for two to four options a player compares at a glance, \"dropdown\" for a long list, and \"stepper\" for an ordered scale. Set interaction=\"hold\" for a hold-to-charge commit and \"swipe\" for a swipe card, where a press on an option or on a card's edge also commits it, for a player who cannot swipe; both always commit, because a charge that has filled and a gesture that has landed are deliberate acts. Set commitOnSelect for a fast tap round; leave it off when the player should be able to change their mind. Space held charges a hold and Enter commits it outright, so a player who cannot hold a key can still play."
     },
     {
       "name": "sheet",
@@ -1774,7 +1774,8 @@
       ],
       "registryDependencies": [
         "@gamestage/button",
-        "@gamestage/tokens"
+        "@gamestage/tokens",
+        "@gamestage/strings"
       ],
       "files": [
         {
@@ -1793,7 +1794,7 @@
           "target": "components/gamestage/trap.ts"
         }
       ],
-      "docs": "Put `position: relative` on the surface the sheet belongs to and render the sheet inside it; it covers that surface and anchors to its foot. Pass `open` and `onDismiss` as a controlled pair: the host owns whether it is open, and `onDismiss` is called on the scrim, on Escape and on the ghost action. `label` is the dialog's accessible name and is required. Give it `title`, `kicker`, `media` and `description` for a header row, `primaryAction` and `secondaryAction` for the two controls under the content, or none of them and put a list of options in `children`. The primary action does not close the sheet; what it does is the host's, and the host closes the sheet when it is done. Open one at a time: each holds focus."
+      "docs": "Put `position: relative` on the surface the sheet belongs to and render the sheet inside it; it covers that surface and anchors to its foot. Pass `open` and `onDismiss` as a controlled pair: the host owns whether it is open, and `onDismiss` is called on the scrim, on Escape and on the ghost action. `label` is the dialog's accessible name and is required. Give it `title`, `kicker`, `media` and `description` for a header row, `primaryAction` and `secondaryAction` for the two controls under the content, or none of them and put a list of options in `children`. The primary action does not close the sheet; what it does is the host's, and the host closes the sheet when it is done. Without a `secondaryAction` the sheet draws a ghost named Close (`sheet.closeLabel`) in its place, so a player on a phone screen reader, who has no Escape key, always has a way out. Open one at a time: each holds focus."
     },
     {
       "name": "slider",
