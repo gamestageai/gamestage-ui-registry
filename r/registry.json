@@ -1827,6 +1827,177 @@
       "docs": "Pass `label` to name the thing being predicted; a slider with no name is unusable with a screen reader. Pass `increment` to change the snap interval, which is five per BDS-014. `commits` defaults to `\"separate\"`, which renders the commit control and is what a prediction wants; `\"immediate\"` is for the rare surface where the drag itself is the answer, a volume rather than a prediction. Take the answer from `onCommitted`, never from `onValueChange`: the second one fires for every number the player passes through on the way. Pass `value` to own the number yourself, or `defaultValue` to let the slider hold it; either way it is snapped before it is rendered."
     },
     {
+      "name": "sounds",
+      "type": "registry:file",
+      "title": "Gamestage UI sounds",
+      "description": "The default sound for every sfx cue, one MP3 per cue name with three takes for correct, countdown, rankUp, reward and xp, about 140KB in all, and createDefaultSoundAdapter, which plays them: pass it to GameFeelProvider as sound, with { pick: { rankUp: 2 } } to choose a take per cue or { vary: true } to rotate them. Generated with ElevenLabs at build time on a paid plan and shipped under MIT. GSUI-38.",
+      "categories": [
+        "Foundations"
+      ],
+      "dependencies": [],
+      "registryDependencies": [
+        "@gamestage/cues"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/runtime/feel/sound-set.ts",
+          "type": "registry:lib",
+          "target": "components/gamestage/sound-set.ts"
+        },
+        {
+          "path": "packages/sounds/sfx/celebrate.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/celebrate.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/collect.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/collect.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/commit.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/commit.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/correct-2.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/correct-2.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/correct-3.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/correct-3.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/correct.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/correct.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/countdown-2.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/countdown-2.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/countdown-3.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/countdown-3.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/countdown.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/countdown.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/go.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/go.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/hint.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/hint.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/levelUp.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/levelUp.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/press.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/press.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/rankUp-2.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/rankUp-2.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/rankUp-3.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/rankUp-3.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/rankUp.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/rankUp.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/reveal.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/reveal.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/reward-2.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/reward-2.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/reward-3.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/reward-3.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/reward.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/reward.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/score.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/score.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/select.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/select.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/streak.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/streak.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/tick.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/tick.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/win.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/win.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/wrong.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/wrong.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/xp-2.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/xp-2.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/xp-3.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/xp-3.mp3"
+        },
+        {
+          "path": "packages/sounds/sfx/xp.mp3",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/xp.mp3"
+        },
+        {
+          "path": "packages/sounds/README.md",
+          "type": "registry:file",
+          "target": "public/gamestage/sfx/README.md"
+        }
+      ],
+      "cssVars": {}
+    },
+    {
       "name": "sponsor",
       "type": "registry:ui",
       "title": "Sponsor",
