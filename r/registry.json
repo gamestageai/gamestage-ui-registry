@@ -1243,7 +1243,7 @@
       "name": "onboarding",
       "type": "registry:ui",
       "title": "Onboarding",
-      "description": "The sequence a player is walked through before they play: an illustration, a step, the pager saying where in the sequence this is, and a way forward with a way out beside it. The step is a real `tutorial-step` and the pager is `segments` in its pager treatment, the same row of cells the round indicator and a quest's progress use, so neither is written again here and both keep their own root marker. The pager is derived from the step rather than passed, so the two cannot disagree. Position is `data-gs-step` over `data-gs-max`, the same pair progress uses. A finished sequence carries `data-gs-complete`; a skipped one carries `data-gs-dismissed` and renders nothing inside, because leaving controls in an aria-hidden subtree is a keyboard trap for the player that rule exists for. Performs nothing: it does not advance itself, remember the player has seen it, or decide the sequence is done.",
+      "description": "The sequence a player is walked through before they play: an illustration, a step, the pager saying where in the sequence this is, and a way forward with a way out beside it. The step is a real `tutorial-step` and the pager is `segments` in its pager treatment, the same row of cells the round indicator and a quest's progress use, so neither is written again here and both keep their own root marker; a one-step sequence draws no pager at all. The way forward is the library's `button`, so a theme's button roles reach it. The pager is derived from the step rather than passed, so the two cannot disagree. Position is `data-gs-step` over `data-gs-max`, the same pair progress uses. A finished sequence carries `data-gs-complete`; a skipped one carries `data-gs-dismissed` and renders nothing inside, because leaving controls in an aria-hidden subtree is a keyboard trap for the player that rule exists for. Performs nothing: it does not advance itself, remember the player has seen it, or decide the sequence is done.",
       "categories": [
         "Flow and guidance"
       ],
@@ -1254,6 +1254,7 @@
         "@gamestage/tokens",
         "@gamestage/tutorial-step",
         "@gamestage/segments",
+        "@gamestage/button",
         "@gamestage/strings"
       ],
       "files": [
@@ -1268,7 +1269,7 @@
           "target": "components/gamestage/onboarding.css"
         }
       ],
-      "docs": "Pass `steps`, one entry per step with a `title`, a `body` and an optional `media` slot for the illustration or animation, and `step` for the one the sequence is on, from 1. Pass `onNext`, `onBack` and `onDismiss` to get the three controls; a sequence with none renders no controls at all, because the component never invents a way forward the host did not ask for. Pass `complete` when the host says the sequence is done and `dismissed` when the player closed it; neither is inferred from the step number. A step out of range renders nothing rather than throwing, and the attributes still carry what the host asked for. It imports `./tutorial-step` and `./segments`, which are the flat paths a `gamestage-ui add` produces, and `@gamestage/tutorial-step` and `@gamestage/segments` are what put those files there."
+      "docs": "Pass `steps`, one entry per step with a `title`, a `body` and an optional `media` slot for the illustration or animation, and `step` for the one the sequence is on, from 1. Pass `onNext`, `onBack` and `onDismiss` to get the three controls; a sequence with none renders no controls at all, because the component never invents a way forward the host did not ask for. Pass `heading` for the small heading that names the game or the show, and `titlePlacement=\"above\"` to draw it with the title over the card rather than in it, as a broadcaster's how-to-play does (GSUI-375). A one-step sequence draws no pager, because one cell saying you are here is not a position (GSUI-376). Pass `complete` when the host says the sequence is done and `dismissed` when the player closed it; neither is inferred from the step number. A step out of range renders nothing rather than throwing, and the attributes still carry what the host asked for. It imports `./tutorial-step`, `./segments` and `./button`, which are the flat paths a `gamestage-ui add` produces, and `@gamestage/tutorial-step`, `@gamestage/segments` and `@gamestage/button` are what put those files there."
     },
     {
       "name": "player-card",
