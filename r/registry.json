@@ -1760,13 +1760,13 @@
           "target": "components/gamestage/selector.css"
         }
       ],
-      "docs": "Use presentation=\"segmented\" for two to four options a player compares at a glance, \"dropdown\" for a long list, and \"stepper\" for an ordered scale. Set interaction=\"hold\" for a hold-to-charge commit and \"swipe\" for a swipe card, where a press on an option or on a card's edge also commits it, for a player who cannot swipe; both always commit, because a charge that has filled and a gesture that has landed are deliberate acts. Set commitOnSelect for a fast tap round; leave it off when the player should be able to change their mind. Space held charges a hold and Enter commits it outright, so a player who cannot hold a key can still play."
+      "docs": "Use presentation=\"segmented\" for two to four options a player compares at a glance, \"dropdown\" for a long list, and \"stepper\" for an ordered scale. Set interaction=\"hold\" for a hold-to-charge commit and \"swipe\" for a swipe card, where a press on an option or on a card's edge also commits it, for a player who cannot swipe; both always commit, because a charge that has filled and a gesture that has landed are deliberate acts. Set commitOnSelect for a fast tap round; leave it off when the player should be able to change their mind. Space held charges a hold and Enter commits it outright, so a player who cannot hold a key can still play. The dropdown trigger includes an aria-hidden chevron at its inline end: down when closed, up when open, driven by aria-expanded in CSS. Themes can restyle [data-gs-scope=\"selector\"][data-gs-part=\"chevron\"] in overrides.css using existing tokens."
     },
     {
       "name": "sheet",
       "type": "registry:ui",
       "title": "Sheet",
-      "description": "A surface that rises from the bottom of its container for one short job and then goes: reward detail, the options of a select on touch, share, filters, more. A scrim over the scene, a panel anchored to the foot of the container with a grab handle, a header row of art, kicker, title and a line of body, whatever the host puts in the middle, then a primary action and a ghost under it. It is modal while open: focus is held inside the panel, Escape closes it, a tap on the scrim closes it, and focus goes back to what had it. Capped at sixty percent of its container, because anything taller is a page. Unmounted rather than hidden when closed; whether the player dismissed it is the host's state. Performs nothing: what the actions do is the host's, and it holds no state of its own beyond where focus was.",
+      "description": "A dismissible surface for one short non-destructive job: sharing, reward detail, filters or options. Bottom sheet by default; presentation=\"dialog\" centres it over the scene with a named top-right close button and optional media, never a required warning glyph. Focus stays inside while open and returns on close. Modal is reserved for irreversible actions.",
       "categories": [
         "Application surfaces"
       ],
@@ -1776,7 +1776,8 @@
       "registryDependencies": [
         "@gamestage/button",
         "@gamestage/tokens",
-        "@gamestage/strings"
+        "@gamestage/strings",
+        "@gamestage/glyphs"
       ],
       "files": [
         {
@@ -1795,7 +1796,7 @@
           "target": "components/gamestage/trap.ts"
         }
       ],
-      "docs": "Put `position: relative` on the surface the sheet belongs to and render the sheet inside it; it covers that surface and anchors to its foot. Pass `open` and `onDismiss` as a controlled pair: the host owns whether it is open, and `onDismiss` is called on the scrim, on Escape and on the ghost action. `label` is the dialog's accessible name and is required. Give it `title`, `kicker`, `media` and `description` for a header row, `primaryAction` and `secondaryAction` for the two controls under the content, or none of them and put a list of options in `children`. The primary action does not close the sheet; what it does is the host's, and the host closes the sheet when it is done. Without a `secondaryAction` the sheet draws a ghost named Close (`sheet.closeLabel`) in its place, so a player on a phone screen reader, who has no Escape key, always has a way out. Open one at a time: each holds focus."
+      "docs": "Put `position: relative` on the surface the sheet belongs to and render the sheet inside it; it covers that surface and anchors to its foot. Pass `open` and `onDismiss` as a controlled pair: the host owns whether it is open, and `onDismiss` is called on the scrim, on Escape and on the ghost action. `label` is the dialog's accessible name and is required. Give it `title`, `kicker`, `media` and `description` for a header row, `primaryAction` and `secondaryAction` for the two controls under the content, or none of them and put a list of options in `children`. The primary action does not close the sheet; what it does is the host's, and the host closes the sheet when it is done. Without a `secondaryAction` the sheet draws a ghost named Close (`sheet.closeLabel`) in its place, so a player on a phone screen reader, who has no Escape key, always has a way out. Open one at a time: each holds focus. Use presentation=\"dialog\" for a centred share confirmation: pass title=\"Share league with friends\", description, primaryAction labelled Copy link and secondaryAction labelled Cancel. Omit media for no glyph. The close part calls onDismiss and takes its accessible name from sheet.closeLabel. The dialog uses the standard primary button tokens (color.interactive and color.onAccent), so a theme can supply a white primary; the bottom sheet retains its positive primary. The host performs copying. The dialog scrolls within the available container height."
     },
     {
       "name": "slider",
