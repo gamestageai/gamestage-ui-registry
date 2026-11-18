@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tag",
+  "title": "Tag",
+  "description": "One short word that says what state a row is in, such as Joined, Public or Private. Three tones: neutral, positive and accent. It reads its colours from roles every theme already sets, so any theme draws it. It is a word, not a control, and it wraps rather than truncating.",
+  "dependencies": [
+    "react"
+  ],
+  "registryDependencies": [
+    "@gamestage/tokens"
+  ],
+  "files": [
+    {
+      "path": "packages/ui/src/tag/tag.tsx",
+      "content": "import * as React from 'react'\n\n// The component brings its own styles, so `gamestage-ui add tag` installs a\n// styled Tag rather than a bare span.\nimport './tag.css'\n\n/**\n * Tag: one short word that says what state a row is in.\n *\n * The MLB leagues list starts each row with Joined, Public or Private\n * (GSUI-400). Nothing in the library fitted. Badge is a reward roundel and\n * Status is the large in-game card (READY, GO!), so until this existed the\n * theme preview drew the word as plain row value text and a reader could not\n * tell a state from a value.\n *\n * It reads its colours from roles every theme already sets, so a new theme\n * draws it with nothing added: `neutral` uses the raised surface and the\n * secondary ink, `positive` the positive ink on the surface, and `accent` the\n * same fill and ink as a primary button. A theme can still set\n * `--gs-tag-fill` and `--gs-tag-ink` to override all three.\n *\n * It is a word, not a control. It takes no handler and has no role, and it\n * never truncates: a translated word wraps rather than losing its end.\n */\n\n/** How much the word stands out. `neutral` is the default. */\nexport type TagTone = 'neutral' | 'positive' | 'accent'\n\nexport interface TagProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'children'> {\n  /** The word. Host copy, always: Joined, Public, Private. */\n  label: string\n  /** How much it stands out. Defaults to `neutral`. */\n  tone?: TagTone\n}\n\nexport function Tag(props: TagProps) {\n  const { label, tone = 'neutral', className, ...rest } = props\n  return (\n    <span\n      {...rest}\n      className={['gs-tag', className].filter(Boolean).join(' ')}\n      data-gs-component=\"tag\"\n      data-gs-tone={tone}\n    >\n      <span className=\"gs-tag__label\" data-gs-scope=\"tag\" data-gs-part=\"label\">\n        {label}\n      </span>\n    </span>\n  )\n}\n",
+      "type": "registry:ui",
+      "target": "components/gamestage/tag.tsx"
+    },
+    {
+      "path": "packages/ui/src/tag/tag.css",
+      "content": "/* Tag. Every value comes from a token; nothing here is a literal colour.\n\n   Each tone sets the two custom properties, and the shape reads only those,\n   so a theme that sets --gs-tag-fill and --gs-tag-ink on a scope recolours\n   every tone at once. */\n\n.gs-tag {\n  --gs-tag-fill-default: var(--gs-color-surface-raised);\n  --gs-tag-ink-default: var(--gs-color-ink-secondary);\n  --gs-tag-edge-default: var(--gs-color-edge);\n\n  box-sizing: border-box;\n  display: inline-flex;\n  align-items: center;\n  max-inline-size: 100%;\n  min-inline-size: 0;\n  padding: var(--gs-space-1) var(--gs-space-2);\n\n  border: var(--gs-stroke-ui) solid var(--gs-tag-edge, var(--gs-tag-edge-default));\n  border-radius: var(--gs-radius-full);\n  background: var(--gs-tag-fill, var(--gs-tag-fill-default));\n  color: var(--gs-tag-ink, var(--gs-tag-ink-default));\n  vertical-align: middle;\n\n  /* A tag sits inside other type, such as a Row value set in the display\n     face. Arcade's display shadow then reached the word and blurred it on\n     the fill, so the tag sets its own and inherits none. */\n  text-shadow: none;\n  letter-spacing: normal;\n  text-transform: none;\n}\n\n.gs-tag[data-gs-tone='positive'] {\n  --gs-tag-fill-default: var(--gs-color-surface);\n  --gs-tag-ink-default: var(--gs-color-positive-ink, var(--gs-color-positive-solid));\n  --gs-tag-edge-default: var(--gs-color-positive-ink, var(--gs-color-positive-solid));\n}\n\n.gs-tag[data-gs-tone='accent'] {\n  --gs-tag-fill-default: var(--gs-color-interactive);\n  --gs-tag-ink-default: var(--gs-color-on-accent);\n  --gs-tag-edge-default: var(--gs-color-interactive);\n}\n\n/* The word, in the label face at the caption size, so it reads as smaller\n   than the row label beside it. It wraps inside itself rather than being cut: a state the\n   player can only half read is worse than one on two lines. */\n.gs-tag__label {\n  min-inline-size: 0;\n  font-family: var(--gs-type-label-font-family);\n  font-size: var(--gs-type-caption-font-size);\n  font-weight: var(--gs-type-label-font-weight);\n  line-height: var(--gs-type-title-line-height);\n  overflow-wrap: anywhere;\n}\n",
+      "type": "registry:style",
+      "target": "components/gamestage/tag.css"
+    }
+  ],
+  "docs": "Pass label for the word and tone for how much it stands out: neutral (default), positive or accent. Put it in a Row's value, a Leaderboard entry or any list. To recolour every tone, set --gs-tag-fill and --gs-tag-ink on a scope. Style the label part with data-gs-scope=\"tag\".",
+  "categories": [
+    "Application surfaces"
+  ],
+  "type": "registry:ui"
+}

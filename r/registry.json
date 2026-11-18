@@ -1272,6 +1272,37 @@
       "docs": "Pass `steps`, one entry per step with a `title`, a `body` and an optional `media` slot for the illustration or animation, and `step` for the one the sequence is on, from 1. Pass `onNext`, `onBack` and `onDismiss` to get the three controls; a sequence with none renders no controls at all, because the component never invents a way forward the host did not ask for. Pass `heading` for the small heading that names the game or the show, and `titlePlacement=\"above\"` to draw it with the title over the card rather than in it, as a broadcaster's how-to-play does (GSUI-375). A one-step sequence draws no pager, because one cell saying you are here is not a position (GSUI-376). Pass `complete` when the host says the sequence is done and `dismissed` when the player closed it; neither is inferred from the step number. A step out of range renders nothing rather than throwing, and the attributes still carry what the host asked for. It imports `./tutorial-step`, `./segments` and `./button`, which are the flat paths a `gamestage-ui add` produces, and `@gamestage/tutorial-step`, `@gamestage/segments` and `@gamestage/button` are what put those files there."
     },
     {
+      "name": "page-header",
+      "type": "registry:ui",
+      "title": "Page header",
+      "description": "A page header with the host's event and sponsor lockup, a small heading naming the game, the page title and an optional back control. The heading and title read as one heading, at level 1 by default or level 2 inside a host page. Long titles wrap. The back control uses Button and a left chevron, and reports a press through onBack. The host performs navigation; this component builds no URLs and makes no network requests.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens",
+        "@gamestage/strings",
+        "@gamestage/button",
+        "@gamestage/glyphs"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/page-header/page-header.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/page-header.tsx"
+        },
+        {
+          "path": "packages/ui/src/page-header/page-header.css",
+          "type": "registry:style",
+          "target": "components/gamestage/page-header.css"
+        }
+      ],
+      "docs": "Pass title for the page name, heading for the game name and brand for a host-supplied image or mark. Pass onBack to show the back control; its label comes from page-header.backLabel in strings, defaulting to Back, or from backLabel. Use level={2} when the host supplies the main page heading. Style the existing brand, heading, label, decrement and chevron parts with data-gs-scope=\"page-header\"."
+    },
+    {
       "name": "player-card",
       "type": "registry:ui",
       "title": "Player card",
@@ -2239,6 +2270,34 @@
         }
       ],
       "docs": "Pass `label`, what the deck is for a screen reader, and `cards`, top first, each `{ id, label, detail?, media? }`. `onSwipe(cardId, direction)` fires as a card is thrown, by gesture, button or arrow key; the direction is `left`, `right` or `up`, and your app decides what it means. `answers` names the words: `{ left: 'No', right: 'Yes' }` by default, and naming `up` turns the up answer on. Pass `onUndo` to offer Undo, which brings the last card back and tells you which. Pass `empty` for what shows when the deck runs out. Put the deck in a screen that clips its overflow, such as Stage, so a thrown card leaves the screen rather than widening the page."
+    },
+    {
+      "name": "tag",
+      "type": "registry:ui",
+      "title": "Tag",
+      "description": "One short word that says what state a row is in, such as Joined, Public or Private. Three tones: neutral, positive and accent. It reads its colours from roles every theme already sets, so any theme draws it. It is a word, not a control, and it wraps rather than truncating.",
+      "categories": [
+        "Application surfaces"
+      ],
+      "dependencies": [
+        "react"
+      ],
+      "registryDependencies": [
+        "@gamestage/tokens"
+      ],
+      "files": [
+        {
+          "path": "packages/ui/src/tag/tag.tsx",
+          "type": "registry:ui",
+          "target": "components/gamestage/tag.tsx"
+        },
+        {
+          "path": "packages/ui/src/tag/tag.css",
+          "type": "registry:style",
+          "target": "components/gamestage/tag.css"
+        }
+      ],
+      "docs": "Pass label for the word and tone for how much it stands out: neutral (default), positive or accent. Put it in a Row's value, a Leaderboard entry or any list. To recolour every tone, set --gs-tag-fill and --gs-tag-ink on a scope. Style the label part with data-gs-scope=\"tag\"."
     },
     {
       "name": "theme-arcade",
